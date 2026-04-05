@@ -1,0 +1,60 @@
+:host {
+  position: absolute;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.lyda-tooltip {
+  background: #0f172a;
+  color: #f8fafc;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  position: relative;
+}
+
+.lyda-tooltip::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #0f172a;
+  transform: rotate(45deg);
+}
+
+.lyda-tooltip-host--right .lyda-tooltip::after {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  border-left: 1px solid #334155;
+  border-bottom: 1px solid #334155;
+}
+
+.lyda-tooltip-host--left .lyda-tooltip::after {
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  border-right: 1px solid #334155;
+  border-top: 1px solid #334155;
+}
+
+.lyda-tooltip-host--top .lyda-tooltip::after {
+  left: 50%;
+  bottom: -5px;
+  transform: translateX(-50%) rotate(45deg);
+  border-right: 1px solid #334155;
+  border-bottom: 1px solid #334155;
+}
+
+.lyda-tooltip-host--bottom .lyda-tooltip::after {
+  left: 50%;
+  top: -5px;
+  transform: translateX(-50%) rotate(45deg);
+  border-left: 1px solid #334155;
+  border-top: 1px solid #334155;
+}

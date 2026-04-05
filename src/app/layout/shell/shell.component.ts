@@ -1,15 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import {
-  LucideBell,
-  LucideFolderOpen,
-  LucideLogOut,
   LucideMail,
-  LucideMessageSquare,
   LucideSettings,
+  LucideLogOut,
+  LucideMessageSquare,
   LucideSquareCheckBig,
+  LucideFolderOpen,
+  LucideBell,
+  LucidePanelLeftClose,
+  LucidePanelLeftOpen,
 } from '@lucide/angular';
+import { TooltipDirective } from '../../shared/directives/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-shell',
@@ -26,20 +29,29 @@ import {
     LucideSquareCheckBig,
     LucideFolderOpen,
     LucideBell,
+    LucidePanelLeftClose,
+    LucidePanelLeftOpen,
+    TooltipDirective,
   ],
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.scss',
 })
 export class ShellComponent {
   isProfileMenuOpen = false;
-
-  constructor(private router: Router) {}
+  isSidebarCollapsed = false;
 
   user = {
-    name: 'Federico Molino',
+    name: 'Federico',
     email: 'federico@example.com',
     title: 'Software Engineer',
   };
+
+  constructor(private router: Router) {}
+
+  toggleSidebar(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    this.isProfileMenuOpen = false;
+  }
 
   toggleProfileMenu(event: MouseEvent): void {
     event.stopPropagation();
@@ -57,7 +69,7 @@ export class ShellComponent {
 
   onLogout(): void {
     this.isProfileMenuOpen = false;
-    this.router.navigate(['/login']);
+    console.log('Logout');
   }
 
   @HostListener('document:click')

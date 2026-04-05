@@ -24,9 +24,7 @@
     <div class="chat-composer-wrap">
       <div class="chat-composer">
         <div class="chat-composer__topbar">
-          <button class="icon-btn" type="button" aria-label="Aggiungi risorse">
-            +
-          </button>
+          <button class="icon-btn" type="button" aria-label="Aggiungi risorse">+</button>
 
           <select [(ngModel)]="selectedModel" class="model-select">
             @for (model of models; track model.value) {
@@ -39,13 +37,21 @@
 
         <div class="chat-composer__input-row">
           <textarea
+            #promptTextarea
             [(ngModel)]="prompt"
             class="prompt-input"
             rows="1"
             placeholder="Scrivi un messaggio..."
+            (input)="autosize()"
+            (keydown)="onPromptKeydown($event)"
           ></textarea>
 
-          <button class="send-btn" type="button" (click)="sendMessage()">
+          <button
+            class="send-btn"
+            type="button"
+            (click)="sendMessage()"
+            [disabled]="isSendDisabled"
+          >
             Invia
           </button>
         </div>
@@ -55,13 +61,9 @@
 
   <aside class="chat-sidebar">
     <div class="chat-sidebar__top">
-      <button class="sidebar-btn sidebar-btn--primary" type="button">
-        Nuova chat
-      </button>
+      <button class="sidebar-btn sidebar-btn--primary" type="button">Nuova chat</button>
 
-      <button class="sidebar-btn" type="button">
-        Progetti
-      </button>
+      <button class="sidebar-btn" type="button">Progetti</button>
     </div>
 
     <div class="chat-history">

@@ -145,13 +145,14 @@
   border: none;
   outline: none;
   background: transparent;
-  min-height: 52px;
-  max-height: 180px;
+  min-height: 24px;
+  max-height: none;
   padding: 10px 6px;
   font-size: 15px;
   line-height: 1.5;
   color: #111827;
   font-family: inherit;
+  overflow-y: hidden;
 }
 
 .prompt-input::placeholder {
@@ -170,9 +171,15 @@
   transition: 0.2s ease;
 }
 
-.send-btn:hover {
+.send-btn:hover:not(:disabled) {
   transform: translateY(-1px);
   opacity: 0.95;
+}
+
+.send-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .chat-sidebar {

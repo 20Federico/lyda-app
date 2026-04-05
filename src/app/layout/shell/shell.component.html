@@ -1,27 +1,66 @@
 <div class="app-shell">
-  <aside class="sidebar">
+  <aside class="sidebar" [class.sidebar--collapsed]="isSidebarCollapsed">
     <div class="sidebar__top">
-      <h2>Lyda</h2>
+      <div class="sidebar__header">
+        @if (!isSidebarCollapsed) {
+          <h2>Lyda</h2>
+        }
+
+        <button
+          type="button"
+          class="sidebar__toggle"
+          (click)="toggleSidebar()"
+          [attr.aria-label]="isSidebarCollapsed ? 'Espandi sidebar' : 'Comprimi sidebar'"
+          [lydaTooltip]="isSidebarCollapsed ? 'Espandi sidebar' : 'Comprimi sidebar'"
+          [lydaTooltipPosition]="isSidebarCollapsed ? 'right' : 'bottom'"
+        >
+          @if (!isSidebarCollapsed) {
+            <svg lucidePanelLeftClose class="sidebar__toggle-icon"></svg>
+          } @else {
+            <svg lucidePanelLeftOpen class="sidebar__toggle-icon"></svg>
+          }
+        </button>
+      </div>
 
       <nav>
-        <a routerLink="/chat" routerLinkActive="active">
+        <a routerLink="/chat" routerLinkActive="active" [attr.title]="isSidebarCollapsed ? 'Chat' : null"
+          [lydaTooltip]="isSidebarCollapsed ? 'Chat' : null"
+          lydaTooltipPosition="right"
+        >
           <svg lucideMessageSquare class="sidebar__icon"></svg>
-          <span>Chat</span>
+          @if (!isSidebarCollapsed) {
+            <span>Chat</span>
+          }
         </a>
 
-        <a routerLink="/tasks" routerLinkActive="active">
+        <a routerLink="/tasks" routerLinkActive="active" [attr.title]="isSidebarCollapsed ? 'Tasks' : null"
+          [lydaTooltip]="isSidebarCollapsed ? 'Tasks' : null"
+          lydaTooltipPosition="right"
+          >
           <svg lucideSquareCheckBig class="sidebar__icon"></svg>
-          <span>Tasks</span>
+          @if (!isSidebarCollapsed) {
+            <span>Tasks</span>
+          }
         </a>
 
-        <a routerLink="/projects" routerLinkActive="active">
+        <a routerLink="/projects" routerLinkActive="active" [attr.title]="isSidebarCollapsed ? 'Projects' : null"
+          [lydaTooltip]="isSidebarCollapsed ? 'Projects' : null"
+          lydaTooltipPosition="right"
+          >
           <svg lucideFolderOpen class="sidebar__icon"></svg>
-          <span>Projects</span>
+          @if (!isSidebarCollapsed) {
+            <span>Projects</span>
+          }
         </a>
 
-        <a routerLink="/reminders" routerLinkActive="active">
+        <a routerLink="/reminders" routerLinkActive="active" [attr.title]="isSidebarCollapsed ? 'Reminders' : null"
+          [lydaTooltip]="isSidebarCollapsed ? 'Reminders' : null"
+          lydaTooltipPosition="right"
+          >
           <svg lucideBell class="sidebar__icon"></svg>
-          <span>Reminders</span>
+          @if (!isSidebarCollapsed) {
+            <span>Reminders</span>
+          }
         </a>
       </nav>
     </div>
@@ -32,13 +71,18 @@
           class="profile-trigger"
           type="button"
           (click)="toggleProfileMenu($event)"
+          [attr.title]="isSidebarCollapsed ? user.name : null"
+          [lydaTooltip]="isSidebarCollapsed ? 'Account' : null"
+          lydaTooltipPosition="right"
         >
           <div class="profile-avatar">F</div>
 
-          <div class="profile-meta">
-            <span class="profile-name">{{ user.name }}</span>
-            <span class="profile-subtitle">{{user.title}}</span>
-          </div>
+          @if (!isSidebarCollapsed) {
+            <div class="profile-meta">
+              <span class="profile-name">{{ user.name }}</span>
+              <span class="profile-subtitle">Profilo</span>
+            </div>
+          }
         </button>
 
         @if (isProfileMenuOpen) {
@@ -48,8 +92,8 @@
             </div>
 
             <button type="button" class="profile-menu__item" (click)="onSettings()">
-              <span>Settings</span>
               <svg lucideSettings class="profile-menu__icon"></svg>
+              <span>Settings</span>
             </button>
 
             <button
@@ -57,8 +101,8 @@
               class="profile-menu__item profile-menu__item--danger"
               (click)="onLogout()"
             >
-            <span>Logout</span>
-            <svg lucideLogOut class="profile-menu__icon"></svg>
+              <svg lucideLogOut class="profile-menu__icon"></svg>
+              <span>Logout</span>
             </button>
           </div>
         }
