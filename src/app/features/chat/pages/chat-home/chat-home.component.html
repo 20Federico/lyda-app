@@ -61,17 +61,31 @@
 
   <aside class="chat-sidebar">
     <div class="chat-sidebar__top">
-      <button class="sidebar-btn sidebar-btn--primary" type="button">Nuova chat</button>
-
-      <button class="sidebar-btn" type="button">Progetti</button>
+      <button class="sidebar-btn sidebar-btn--primary" type="button">
+        <svg lucideSquarePen class="sidebar-btn__icon"></svg>
+        <span>Nuova chat</span>
+      </button>
     </div>
 
-    <div class="chat-history">
-      <div class="chat-history__header">Chat passate</div>
+    <div class="chat-group">
+      <!-- <button class="sidebar-btn" type="button">Progetti</button> -->
+      <div class="chat-group__header">Progetti</div>
 
-      <div class="chat-history__list">
+      <div class="chat-group__list">
         @for (chat of pastChats; track chat) {
-          <button class="history-item" type="button">
+          <button class="group-item" type="button">
+            {{ chat }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="chat-group">
+      <div class="chat-group__header">Chat passate</div>
+
+      <div class="chat-group__list">
+        @for (chat of pastChats; track chat) {
+          <button class="group-item" type="button">
             {{ chat }}
           </button>
         }

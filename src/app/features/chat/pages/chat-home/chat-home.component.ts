@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { LucideSquarePen } from '@lucide/angular';
 
 @Component({
   selector: 'app-chat-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideSquarePen],
   templateUrl: './chat-home.component.html',
   styleUrl: './chat-home.component.scss',
 })
