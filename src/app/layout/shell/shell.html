@@ -1,0 +1,17 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <h2>Lyda</h2>
+
+    <nav>
+      <a routerLink="/chat" routerLinkActive="active">Chat</a>
+      <a routerLink="/tasks" (click)="test()" routerLinkActive="active">Tasks</a>
+      <a routerLink="/projects" routerLinkActive="active">Projects</a>
+      <a routerLink="/reminders" routerLinkActive="active">Reminders</a>
+      <a routerLink="/settings" routerLinkActive="active">Settings</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
