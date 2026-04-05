@@ -11,6 +11,7 @@ import {
   LucideBell,
   LucidePanelLeftClose,
   LucidePanelLeftOpen,
+  LucideNotebookPen,
 } from '@lucide/angular';
 import { TooltipDirective } from '../../shared/directives/tooltip/tooltip.directive';
 
@@ -31,6 +32,7 @@ import { TooltipDirective } from '../../shared/directives/tooltip/tooltip.direct
     LucideBell,
     LucidePanelLeftClose,
     LucidePanelLeftOpen,
+    LucideNotebookPen,
     TooltipDirective,
   ],
   templateUrl: './shell.component.html',

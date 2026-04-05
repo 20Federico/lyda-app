@@ -1,4 +1,4 @@
-<div class="chat-page">
+<div class="chat-page" [class.chat-page--collapsed]="isChatSidebarCollapsed">
   <section class="chat-main">
     <header class="chat-header">
       <div class="chat-header__title-wrap">
@@ -59,37 +59,83 @@
     </div>
   </section>
 
-  <aside class="chat-sidebar">
+  <aside class="chat-sidebar" [class.chat-page--collapsed]="isChatSidebarCollapsed">
     <div class="chat-sidebar__top">
-      <button class="sidebar-btn sidebar-btn--primary" type="button">
+      <div class="chat-sidebar__header">
+        <button
+          class="sidebar-icon-btn"
+          type="button"
+          (click)="toggleChatSidebar()"
+          [lydaTooltip]="isChatSidebarCollapsed ? 'Espandi sidebar' : 'Comprimi sidebar'"
+          lydaTooltipPosition="left"
+          aria-label="Toggle sidebar chat"
+        >
+          @if (!isChatSidebarCollapsed) {
+            <svg lucidePanelLeftOpen class="sidebar-icon-btn__icon"></svg>
+          } @else {
+            <svg lucidePanelLeftClose class="sidebar-icon-btn__icon"></svg>
+          }
+        </button>
+
+        <button
+          class="sidebar-icon-btn"
+          type="button"
+          routerLink="/settings"
+          routerLinkActive="active"
+          [lydaTooltip]="'Impostazioni chatbot'"
+          lydaTooltipPosition="left"
+          aria-label="Impostazioni chat"
+        >
+          <svg lucideSlidersHorizontal class="sidebar-icon-btn__icon"></svg>
+        </button>
+      </div>
+
+      <button
+        class="sidebar-btn sidebar-btn--primary"
+        type="button"
+        [lydaTooltip]="isChatSidebarCollapsed ? 'Nuova chat' : null"
+        lydaTooltipPosition="left"
+      >
         <svg lucideSquarePen class="sidebar-btn__icon"></svg>
-        <span>Nuova chat</span>
+        @if (!isChatSidebarCollapsed) {
+          <span>Nuova chat</span>
+        }
       </button>
     </div>
 
-    <div class="chat-group">
-      <!-- <button class="sidebar-btn" type="button">Progetti</button> -->
-      <div class="chat-group__header">Progetti</div>
+    <div class="chat-sidebar-menu">
+      @if (!isChatSidebarCollapsed) {
+        <div class="chat-group">
+          <div class="chat-group__header">Progetti</div>
+          <div class="chat-group__list">
+            <button class="group-item" type="button">
+              <svg lucideFolderPlus class="sidebar-icon-btn__icon me-2 fw-bold"></svg>
+              <span class="fw-bold">Nuovo progetto</span>
+            </button>
+            @for (chat of pastChats; track chat) {
+              <button class="group-item" type="button">
+                <svg lucideFolderClosed class="sidebar-icon-btn__icon me-2 fw-bold"></svg>
+                <span class="fw-bold">{{ chat }}</span>
+              </button>
+            }
+            <button class="group-item" type="button">
+              <svg lucideEllipsis class="sidebar-icon-btn__icon me-2 fw-bold"></svg>
+              <span class="fw-bold">Vedi tutti</span>
+            </button>
+          </div>
+        </div>
 
-      <div class="chat-group__list">
-        @for (chat of pastChats; track chat) {
-          <button class="group-item" type="button">
-            {{ chat }}
-          </button>
-        }
-      </div>
-    </div>
-
-    <div class="chat-group">
-      <div class="chat-group__header">Chat passate</div>
-
-      <div class="chat-group__list">
-        @for (chat of pastChats; track chat) {
-          <button class="group-item" type="button">
-            {{ chat }}
-          </button>
-        }
-      </div>
+        <div class="chat-group">
+          <div class="chat-group__header">Chat passate</div>
+          <div class="chat-group__list">
+            @for (chat of pastChats; track chat) {
+              <button class="group-item" type="button">
+                {{ chat }}
+              </button>
+            }
+          </div>
+        </div>
+      }
     </div>
   </aside>
 </div>

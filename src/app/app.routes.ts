@@ -5,6 +5,8 @@ import { RemindersHome } from './features/reminders/pages/reminders-home/reminde
 import { SettingsHome } from './features/settings/pages/settings-home/settings-home';
 import { ChatHomeComponent } from './features/chat/pages/chat-home/chat-home.component';
 import { ShellComponent } from './layout/shell/shell.component';
+import { ChatSettingsComponent } from './features/chat/pages/chat-settings/chat-settings.component';
+import { NotesHomeComponent } from './features/notes/pages/notes-home/notes-home.component';
 
 export const routes: Routes = [
   {
@@ -12,10 +14,15 @@ export const routes: Routes = [
     component: ShellComponent,
     children: [
       { path: '', redirectTo: 'chat', pathMatch: 'full' },
-      { path: 'chat', component: ChatHomeComponent },
+      {
+        path: 'chat',
+        component: ChatHomeComponent,
+        children: [{ path: 'settings', component: ChatSettingsComponent }],
+      },
       { path: 'tasks', component: TasksHome },
       { path: 'projects', component: ProjectsHome },
       { path: 'reminders', component: RemindersHome },
+      { path: 'notes', component: NotesHomeComponent },
       { path: 'settings', component: SettingsHome },
     ],
   },

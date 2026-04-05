@@ -23,7 +23,10 @@
       </div>
 
       <nav>
-        <a routerLink="/chat" routerLinkActive="active" [attr.title]="isSidebarCollapsed ? 'Chat' : null"
+        <a
+          routerLink="/chat"
+          routerLinkActive="active"
+          [attr.title]="isSidebarCollapsed ? 'Chat' : null"
           [lydaTooltip]="isSidebarCollapsed ? 'Chat' : null"
           lydaTooltipPosition="right"
         >
@@ -33,33 +36,55 @@
           }
         </a>
 
-        <a routerLink="/tasks" routerLinkActive="active" [attr.title]="isSidebarCollapsed ? 'Tasks' : null"
+        <a
+          routerLink="/tasks"
+          routerLinkActive="active"
+          [attr.title]="isSidebarCollapsed ? 'Tasks' : null"
           [lydaTooltip]="isSidebarCollapsed ? 'Tasks' : null"
           lydaTooltipPosition="right"
-          >
+        >
           <svg lucideSquareCheckBig class="sidebar__icon"></svg>
           @if (!isSidebarCollapsed) {
             <span>Tasks</span>
           }
         </a>
 
-        <a routerLink="/projects" routerLinkActive="active" [attr.title]="isSidebarCollapsed ? 'Projects' : null"
+        <a
+          routerLink="/projects"
+          routerLinkActive="active"
+          [attr.title]="isSidebarCollapsed ? 'Projects' : null"
           [lydaTooltip]="isSidebarCollapsed ? 'Projects' : null"
           lydaTooltipPosition="right"
-          >
+        >
           <svg lucideFolderOpen class="sidebar__icon"></svg>
           @if (!isSidebarCollapsed) {
             <span>Projects</span>
           }
         </a>
 
-        <a routerLink="/reminders" routerLinkActive="active" [attr.title]="isSidebarCollapsed ? 'Reminders' : null"
+        <a
+          routerLink="/reminders"
+          routerLinkActive="active"
+          [attr.title]="isSidebarCollapsed ? 'Reminders' : null"
           [lydaTooltip]="isSidebarCollapsed ? 'Reminders' : null"
           lydaTooltipPosition="right"
-          >
+        >
           <svg lucideBell class="sidebar__icon"></svg>
           @if (!isSidebarCollapsed) {
             <span>Reminders</span>
+          }
+        </a>
+
+        <a
+          routerLink="/notes"
+          routerLinkActive="active"
+          [attr.title]="isSidebarCollapsed ? 'Notes' : null"
+          [lydaTooltip]="isSidebarCollapsed ? 'Notes' : null"
+          lydaTooltipPosition="right"
+        >
+          <svg lucideNotebookPen class="sidebar__icon"></svg>
+          @if (!isSidebarCollapsed) {
+            <span>Notes</span>
           }
         </a>
       </nav>

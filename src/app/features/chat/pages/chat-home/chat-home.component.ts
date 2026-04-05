@@ -1,12 +1,34 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LucideSquarePen } from '@lucide/angular';
+import {
+  LucideFolderClosed,
+  LucidePanelLeftClose,
+  LucidePanelLeftOpen,
+  LucideSlidersHorizontal,
+  LucideSquarePen,
+  LucideFolderPlus,
+  LucideEllipsis,
+} from '@lucide/angular';
+import { TooltipDirective } from '../../../../shared/directives/tooltip/tooltip.directive';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-chat-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideSquarePen],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LucideSquarePen,
+    LucidePanelLeftClose,
+    LucidePanelLeftOpen,
+    LucideSlidersHorizontal,
+    LucideFolderClosed,
+    TooltipDirective,
+    RouterLink,
+    LucideFolderPlus,
+    LucideEllipsis,
+  ],
   templateUrl: './chat-home.component.html',
   styleUrl: './chat-home.component.scss',
 })
@@ -15,6 +37,7 @@ export class ChatHomeComponent implements AfterViewInit {
 
   prompt = '';
   selectedModel = 'gpt-4.1';
+  isChatSidebarCollapsed = false;
 
   chatTitle = 'Nuova chat';
 
@@ -25,6 +48,11 @@ export class ChatHomeComponent implements AfterViewInit {
   ];
 
   pastChats = [
+    'Roadmap MVP Lyda',
+    'Architettura chat AI',
+    'Idee widget task manager',
+    'Flusso progetti condivisi',
+    'Prompt engineering interno',
     'Roadmap MVP Lyda',
     'Architettura chat AI',
     'Idee widget task manager',
@@ -46,6 +74,10 @@ export class ChatHomeComponent implements AfterViewInit {
 
   get isSendDisabled(): boolean {
     return this.prompt.trim().length === 0;
+  }
+
+  toggleChatSidebar(): void {
+    this.isChatSidebarCollapsed = !this.isChatSidebarCollapsed;
   }
 
   sendMessage(): void {
