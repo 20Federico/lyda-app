@@ -1,0 +1,79 @@
+<div class="chat-page">
+  <section class="chat-main">
+    <header class="chat-header">
+      <div class="chat-header__title-wrap">
+        <span class="chat-header__eyebrow">Chat attiva</span>
+        <h1 class="chat-header__title">{{ chatTitle }}</h1>
+      </div>
+    </header>
+
+    <div class="chat-messages">
+      @for (message of messages; track $index) {
+        <div
+          class="message"
+          [class.message--user]="message.role === 'user'"
+          [class.message--assistant]="message.role === 'assistant'"
+        >
+          <div class="message__bubble">
+            {{ message.content }}
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="chat-composer-wrap">
+      <div class="chat-composer">
+        <div class="chat-composer__topbar">
+          <button class="icon-btn" type="button" aria-label="Aggiungi risorse">
+            +
+          </button>
+
+          <select [(ngModel)]="selectedModel" class="model-select">
+            @for (model of models; track model.value) {
+              <option [value]="model.value">
+                {{ model.label }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="chat-composer__input-row">
+          <textarea
+            [(ngModel)]="prompt"
+            class="prompt-input"
+            rows="1"
+            placeholder="Scrivi un messaggio..."
+          ></textarea>
+
+          <button class="send-btn" type="button" (click)="sendMessage()">
+            Invia
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="chat-sidebar">
+    <div class="chat-sidebar__top">
+      <button class="sidebar-btn sidebar-btn--primary" type="button">
+        Nuova chat
+      </button>
+
+      <button class="sidebar-btn" type="button">
+        Progetti
+      </button>
+    </div>
+
+    <div class="chat-history">
+      <div class="chat-history__header">Chat passate</div>
+
+      <div class="chat-history__list">
+        @for (chat of pastChats; track chat) {
+          <button class="history-item" type="button">
+            {{ chat }}
+          </button>
+        }
+      </div>
+    </div>
+  </aside>
+</div>

@@ -1,0 +1,72 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__top">
+      <h2>Lyda</h2>
+
+      <nav>
+        <a routerLink="/chat" routerLinkActive="active">
+          <svg lucideMessageSquare class="sidebar__icon"></svg>
+          <span>Chat</span>
+        </a>
+
+        <a routerLink="/tasks" routerLinkActive="active">
+          <svg lucideSquareCheckBig class="sidebar__icon"></svg>
+          <span>Tasks</span>
+        </a>
+
+        <a routerLink="/projects" routerLinkActive="active">
+          <svg lucideFolderOpen class="sidebar__icon"></svg>
+          <span>Projects</span>
+        </a>
+
+        <a routerLink="/reminders" routerLinkActive="active">
+          <svg lucideBell class="sidebar__icon"></svg>
+          <span>Reminders</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar__bottom">
+      <div class="profile-wrapper">
+        <button
+          class="profile-trigger"
+          type="button"
+          (click)="toggleProfileMenu($event)"
+        >
+          <div class="profile-avatar">F</div>
+
+          <div class="profile-meta">
+            <span class="profile-name">{{ user.name }}</span>
+            <span class="profile-subtitle">{{user.title}}</span>
+          </div>
+        </button>
+
+        @if (isProfileMenuOpen) {
+          <div class="profile-menu" (click)="$event.stopPropagation()">
+            <div class="profile-menu__email">
+              <span>{{ user.email }}</span>
+            </div>
+
+            <button type="button" class="profile-menu__item" (click)="onSettings()">
+              <span>Settings</span>
+              <svg lucideSettings class="profile-menu__icon"></svg>
+            </button>
+
+            <button
+              type="button"
+              class="profile-menu__item profile-menu__item--danger"
+              (click)="onLogout()"
+            >
+            <span>Logout</span>
+            <svg lucideLogOut class="profile-menu__icon"></svg>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </aside>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
