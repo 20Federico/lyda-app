@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   LucideFolderClosed,
@@ -17,6 +25,7 @@ import {
   LucideShare,
   LucideFolderInput,
   LucideChevronRight,
+  LucideMic,
 } from '@lucide/angular';
 import { TooltipDirective } from '../../../../shared/directives/tooltip/tooltip.directive';
 import { RouterLink } from '@angular/router';
@@ -48,6 +57,7 @@ import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
     LucideFolderInput,
     LucideChevronRight,
     OverlayModule,
+    LucideMic,
   ],
   templateUrl: './chat-home.component.html',
   styleUrl: './chat-home.component.scss',
@@ -55,6 +65,7 @@ import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 export class ChatHomeComponent implements AfterViewInit {
   @ViewChild('promptTextarea') promptTextarea?: ElementRef<HTMLTextAreaElement>;
   @ViewChild('messagesContainer') messagesContainer?: ElementRef<HTMLDivElement>;
+  @ViewChildren('submenuPanel') submenuPanels?: QueryList<ElementRef<HTMLElement>>;
   prompt = '';
   selectedModel = 'gpt-4.1';
   isChatSidebarCollapsed = false;
@@ -69,7 +80,9 @@ export class ChatHomeComponent implements AfterViewInit {
 
   openChatMenuId: string | null = null;
   openMoveToProjectForChatId: string | null = null;
-  isMoveHover = false;
+  moveTriggerHover = false;
+  submenuHover = false;
+  private closeSubmenuTimeout?: ReturnType<typeof setTimeout>;
 
   menuPositions: ConnectedPosition[] = [
     // preferito: menu a SINISTRA del trigger, allineato in alto
@@ -332,6 +345,8 @@ export class ChatHomeComponent implements AfterViewInit {
   closeChatItemMenu(): void {
     this.openChatMenuId = null;
     this.openMoveToProjectForChatId = null;
+    this.submenuHover = false;
+    this.clearCloseSubmenuTimeout();
   }
 
   @HostListener('document:click')
@@ -373,30 +388,6 @@ export class ChatHomeComponent implements AfterViewInit {
     return this.projects.slice(0, 8);
   }
 
-  onMoveEnter(chatId: string): void {
-    this.isMoveHover = true;
-    this.openMoveToProjectForChatId = chatId;
-  }
-
-  onMoveLeave(): void {
-    this.isMoveHover = false;
-
-    // Piccolo delay per permettere il passaggio trigger -> submenu senza flicker
-    setTimeout(() => {
-      if (!this.isMoveHover) {
-        this.openMoveToProjectForChatId = null;
-      }
-    }, 80);
-  }
-
-  onSubmenuEnter(): void {
-    this.isMoveHover = true;
-  }
-
-  onSubmenuLeave(): void {
-    this.onMoveLeave();
-  }
-
   private scrollToBottom(smooth = true): void {
     const el = this.messagesContainer?.nativeElement;
     if (!el) return;
@@ -413,5 +404,49 @@ export class ChatHomeComponent implements AfterViewInit {
         }
       });
     });
+  }
+
+  onMoveTriggerEnter(chatId: string): void {
+    this.clearCloseSubmenuTimeout();
+    this.openMoveToProjectForChatId = chatId;
+  }
+
+  onMoveTriggerLeave(event: MouseEvent): void {
+    const nextEl = event.relatedTarget as HTMLElement | null;
+
+    // Se stai andando direttamente dentro il submenu, non chiudere
+    if (nextEl && this.isInsideAnySubmenu(nextEl)) {
+      return;
+    }
+
+    // Chiudi "quasi subito", ma dai il tempo all'hover del submenu di scattare
+    this.clearCloseSubmenuTimeout();
+    this.closeSubmenuTimeout = setTimeout(() => {
+      if (!this.submenuHover) {
+        this.openMoveToProjectForChatId = null;
+      }
+    }, 80);
+  }
+
+  onSubmenuEnter(): void {
+    this.submenuHover = true;
+    this.clearCloseSubmenuTimeout();
+  }
+
+  onSubmenuLeave(): void {
+    this.submenuHover = false;
+    this.openMoveToProjectForChatId = null;
+  }
+
+  private isInsideAnySubmenu(el: HTMLElement): boolean {
+    const panels = this.submenuPanels?.toArray() ?? [];
+    return panels.some((p) => p.nativeElement.contains(el));
+  }
+
+  private clearCloseSubmenuTimeout(): void {
+    if (this.closeSubmenuTimeout) {
+      clearTimeout(this.closeSubmenuTimeout);
+      this.closeSubmenuTimeout = undefined;
+    }
   }
 }

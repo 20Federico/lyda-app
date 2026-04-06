@@ -47,6 +47,17 @@
           ></textarea>
 
           <button
+            class="mic-btn"
+            type="button"
+            [disabled]="true"
+            aria-label="Dettatura (presto disponibile)"
+            [lydaTooltip]="'Dettatura non disponibile al momento'"
+            lydaTooltipPosition="top"
+          >
+            <svg lucideMic class="mic-btn__icon"></svg>
+          </button>
+
+          <button
             class="send-btn"
             type="button"
             (click)="sendMessage()"
@@ -223,10 +234,13 @@
                         class="chat-item-menu__submenu-wrap"
                         cdkOverlayOrigin
                         #moveOrigin="cdkOverlayOrigin"
-                        (mouseenter)="onMoveEnter(chat.id)"
-                        (mouseleave)="onMoveLeave()"
                       >
-                        <button class="chat-item-menu__item" type="button">
+                        <button
+                          class="chat-item-menu__item"
+                          type="button"
+                          (mouseenter)="onMoveTriggerEnter(chat.id)"
+                          (mouseleave)="onMoveTriggerLeave($event)"
+                        >
                           <svg lucideFolderInput class="chat-item-menu__icon"></svg>
                           <span>Sposta su progetto</span>
                           <svg lucideChevronRight class="chat-item-menu__icon"></svg>

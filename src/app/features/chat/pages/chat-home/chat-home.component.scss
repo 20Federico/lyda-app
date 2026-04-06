@@ -639,3 +639,31 @@
 .chat-item-submenu__list::-webkit-scrollbar-track {
   background: transparent;
 }
+
+.mic-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.mic-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.mic-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.mic-btn__icon {
+  width: 20px;
+  height: 20px;
+  color: #111827;
+}
