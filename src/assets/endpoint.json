@@ -1,0 +1,26 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "globalMock": true,
+  "defaultDelayMs": 250,
+  "endpoints": [
+    {
+      "key": "chat.list",
+      "method": "GET",
+      "path": "/chats",
+      "mock": {
+        "enabled": true,
+        "file": "mocks/chat/chatList.json",
+        "delayMs": 150
+      }
+    },
+    {
+      "key": "projects.list",
+      "method": "GET",
+      "path": "/projects",
+      "mock": {
+        "enabled": true,
+        "file": "mocks/projects/projectList.json"
+      }
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  OnInit,
   QueryList,
   ViewChild,
   ViewChildren,
@@ -31,6 +32,7 @@ import {
 import { TooltipDirective } from '../../../../shared/directives/tooltip/tooltip.directive';
 import { RouterLink } from '@angular/router';
 import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-chat-home',
@@ -64,7 +66,7 @@ import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
   templateUrl: './chat-home.component.html',
   styleUrl: './chat-home.component.scss',
 })
-export class ChatHomeComponent implements AfterViewInit {
+export class ChatHomeComponent implements OnInit, AfterViewInit {
   @ViewChild('promptTextarea') promptTextarea?: ElementRef<HTMLTextAreaElement>;
   @ViewChild('messagesContainer') messagesContainer?: ElementRef<HTMLDivElement>;
   @ViewChildren('submenuPanel') submenuPanels?: QueryList<ElementRef<HTMLElement>>;
@@ -201,6 +203,14 @@ export class ChatHomeComponent implements AfterViewInit {
       content: 'Ciao. Sono Lyda. Dimmi su cosa vuoi lavorare.',
     },
   ];
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.http.get('/chats').subscribe((res) => {
+      console.log('MOCK RESPONSE /chats:', res);
+    });
+  }
 
   ngAfterViewInit(): void {
     // Imposta l’altezza iniziale corretta (1 riga)
