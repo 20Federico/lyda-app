@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
 import { TasksHome } from './features/tasks/pages/tasks-home/tasks-home';
 import { ProjectsHome } from './features/projects/pages/projects-home/projects-home';
-import { RemindersHome } from './features/reminders/pages/reminders-home/reminders-home';
-import { SettingsHome } from './features/settings/pages/settings-home/settings-home';
+import { SettingsHomeComponent } from './features/settings/pages/settings-home/settings-home.component';
 import { ChatHomeComponent } from './features/chat/pages/chat-home/chat-home.component';
 import { ShellComponent } from './layout/shell/shell.component';
 import { ChatSettingsComponent } from './features/chat/pages/chat-settings/chat-settings.component';
@@ -21,9 +20,8 @@ export const routes: Routes = [
       },
       { path: 'tasks', component: TasksHome },
       { path: 'projects', component: ProjectsHome },
-      { path: 'reminders', component: RemindersHome },
       { path: 'notes', component: NotesHomeComponent },
-      { path: 'settings', component: SettingsHome },
+      { path: 'settings', component: SettingsHomeComponent },
     ],
   },
 ];

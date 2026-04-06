@@ -63,19 +63,6 @@
         </a>
 
         <a
-          routerLink="/reminders"
-          routerLinkActive="active"
-          [attr.title]="isSidebarCollapsed ? 'Reminders' : null"
-          [lydaTooltip]="isSidebarCollapsed ? 'Reminders' : null"
-          lydaTooltipPosition="right"
-        >
-          <svg lucideBell class="sidebar__icon"></svg>
-          @if (!isSidebarCollapsed) {
-            <span>Reminders</span>
-          }
-        </a>
-
-        <a
           routerLink="/notes"
           routerLinkActive="active"
           [attr.title]="isSidebarCollapsed ? 'Notes' : null"
