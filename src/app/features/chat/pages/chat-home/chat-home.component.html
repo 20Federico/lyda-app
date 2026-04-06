@@ -24,7 +24,26 @@
     <div class="chat-composer-wrap">
       <div class="chat-composer">
         <div class="chat-composer__topbar">
-          <button class="icon-btn" type="button" aria-label="Aggiungi risorse">+</button>
+          <div class="attach-wrap">
+            <button
+              class="icon-btn"
+              type="button"
+              aria-label="Allega file"
+              [lydaTooltip]="'Allega file'"
+              lydaTooltipPosition="top"
+              (click)="openFilePicker()"
+            >
+              +
+            </button>
+
+            <input
+              #fileInput
+              type="file"
+              class="file-input-hidden"
+              (change)="onFilesSelected($event)"
+              multiple
+            />
+          </div>
 
           <select [(ngModel)]="selectedModel" class="model-select">
             @for (model of models; track model.value) {
@@ -34,6 +53,24 @@
             }
           </select>
         </div>
+
+        @if (attachedFiles.length > 0) {
+          <div class="attached-files-row">
+            @for (f of attachedFiles; track f.name + f.size + f.lastModified) {
+              <div class="file-pill" [lydaTooltip]="f.name" lydaTooltipPosition="top">
+                <span class="file-pill__name">{{ f.name }}</span>
+                <button
+                  type="button"
+                  class="file-pill__remove"
+                  (click)="removeFile(f)"
+                  aria-label="Rimuovi file"
+                >
+                  ×
+                </button>
+              </div>
+            }
+          </div>
+        }
 
         <div class="chat-composer__input-row">
           <textarea

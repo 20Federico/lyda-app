@@ -66,11 +66,15 @@ export class ChatHomeComponent implements AfterViewInit {
   @ViewChild('promptTextarea') promptTextarea?: ElementRef<HTMLTextAreaElement>;
   @ViewChild('messagesContainer') messagesContainer?: ElementRef<HTMLDivElement>;
   @ViewChildren('submenuPanel') submenuPanels?: QueryList<ElementRef<HTMLElement>>;
+  @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
+
   prompt = '';
   selectedModel = 'gpt-4.1';
   isChatSidebarCollapsed = false;
 
   chatTitle = 'Nuova chat';
+
+  attachedFiles: File[] = [];
 
   isProjectsOpen = true;
   isPastChatsOpen = true;
@@ -448,5 +452,37 @@ export class ChatHomeComponent implements AfterViewInit {
       clearTimeout(this.closeSubmenuTimeout);
       this.closeSubmenuTimeout = undefined;
     }
+  }
+
+  openFilePicker(): void {
+    this.fileInput?.nativeElement.click();
+  }
+
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const newFiles = Array.from(input.files);
+
+    const existingKeys = new Set(
+      this.attachedFiles.map((f) => `${f.name}_${f.size}_${f.lastModified}`)
+    );
+
+    for (const f of newFiles) {
+      const key = `${f.name}_${f.size}_${f.lastModified}`;
+      if (!existingKeys.has(key)) {
+        this.attachedFiles.push(f);
+        existingKeys.add(key);
+      }
+    }
+
+    // reset per poter riselezionare lo stesso file
+    input.value = '';
+  }
+
+  removeFile(file: File): void {
+    this.attachedFiles = this.attachedFiles.filter(
+      (f) => !(f.name === file.name && f.size === file.size && f.lastModified === file.lastModified)
+    );
   }
 }

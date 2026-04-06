@@ -117,7 +117,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 8px; /* un po' meno, visto che sotto c'è la row */
 }
 
 .icon-btn {
@@ -666,4 +666,63 @@
   width: 20px;
   height: 20px;
   color: #111827;
+}
+
+// Stili per la gestione degli allegati (nell'item del menu)
+.attach-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.attached-files-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 2px 10px;
+}
+
+.file-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 260px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 6px 10px;
+  box-shadow: 0 6px 14px rgba(17, 24, 39, 0.06);
+}
+
+.file-pill__name {
+  max-width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: #111827;
+}
+
+.file-pill__remove {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  color: #6b7280;
+  padding: 0 2px;
+}
+
+.file-pill__remove:hover {
+  color: #111827;
+}
+
+.file-input-hidden {
+  display: none;
 }
