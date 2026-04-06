@@ -106,34 +106,74 @@
     <div class="chat-sidebar-menu">
       @if (!isChatSidebarCollapsed) {
         <div class="chat-group">
-          <div class="chat-group__header">Progetti</div>
-          <div class="chat-group__list">
-            <button class="group-item" type="button">
-              <svg lucideFolderPlus class="sidebar-icon-btn__icon me-2 fw-bold"></svg>
-              <span class="fw-bold">Nuovo progetto</span>
-            </button>
-            @for (chat of pastChats; track chat) {
+          <button
+            class="chat-group__header-btn"
+            type="button"
+            (click)="toggleProjects()"
+            [attr.aria-expanded]="isProjectsOpen"
+          >
+            <span class="chat-group__header-text">Progetti</span>
+            <svg
+              lucideChevronDown
+              class="chat-group__chevron-icon"
+              [class.chat-group__chevron-icon--open]="isProjectsOpen"
+            ></svg>
+          </button>
+
+          @if (isProjectsOpen) {
+            <div class="chat-group__list">
               <button class="group-item" type="button">
-                <svg lucideFolderClosed class="sidebar-icon-btn__icon me-2 fw-bold"></svg>
-                <span class="fw-bold">{{ chat }}</span>
+                <svg lucideFolderPlus class="sidebar-icon-btn__icon me-2 fw-bold"></svg>
+                <span class="fw-bold">Nuovo progetto</span>
               </button>
-            }
-            <button class="group-item" type="button">
-              <svg lucideEllipsis class="sidebar-icon-btn__icon me-2 fw-bold"></svg>
-              <span class="fw-bold">Vedi tutti</span>
-            </button>
-          </div>
+
+              @for (project of visibleProjects; track project) {
+                <button class="group-item" type="button">
+                  <svg lucideFolderClosed class="sidebar-icon-btn__icon me-2 fw-bold"></svg>
+                  <span class="fw-bold">{{ project }}</span>
+                </button>
+              }
+
+              @if (shouldShowProjectsToggle) {
+                <button class="group-item" type="button" (click)="toggleProjectsList()">
+                  @if (projectsShowAll) {
+                    <svg lucideChevronUp class="sidebar-icon-btn__icon me-2 fw-bold"></svg>
+                  } @else {
+                    <svg lucideEllipsis class="sidebar-icon-btn__icon me-2 fw-bold"></svg>
+                  }
+                  <span class="fw-bold">
+                    {{ projectsShowAll ? 'Mostra meno' : 'Vedi tutti' }}
+                  </span>
+                </button>
+              }
+            </div>
+          }
         </div>
 
         <div class="chat-group">
-          <div class="chat-group__header">Chat passate</div>
-          <div class="chat-group__list">
-            @for (chat of pastChats; track chat) {
-              <button class="group-item" type="button">
-                {{ chat }}
-              </button>
-            }
-          </div>
+          <button
+            class="chat-group__header-btn"
+            type="button"
+            (click)="togglePastChats()"
+            [attr.aria-expanded]="isPastChatsOpen"
+          >
+            <span class="chat-group__header-text">Chat passate</span>
+            <svg
+              lucideChevronDown
+              class="chat-group__chevron-icon"
+              [class.chat-group__chevron-icon--open]="isPastChatsOpen"
+            ></svg>
+          </button>
+
+          @if (isPastChatsOpen) {
+            <div class="chat-group__list">
+              @for (chat of pastChats; track chat) {
+                <button class="group-item" type="button">
+                  {{ chat }}
+                </button>
+              }
+            </div>
+          }
         </div>
       }
     </div>

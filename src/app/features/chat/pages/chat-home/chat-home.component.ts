@@ -9,6 +9,8 @@ import {
   LucideSquarePen,
   LucideFolderPlus,
   LucideEllipsis,
+  LucideChevronDown,
+  LucideChevronUp,
 } from '@lucide/angular';
 import { TooltipDirective } from '../../../../shared/directives/tooltip/tooltip.directive';
 import { RouterLink } from '@angular/router';
@@ -28,6 +30,8 @@ import { RouterLink } from '@angular/router';
     RouterLink,
     LucideFolderPlus,
     LucideEllipsis,
+    LucideChevronDown,
+    LucideChevronUp,
   ],
   templateUrl: './chat-home.component.html',
   styleUrl: './chat-home.component.scss',
@@ -41,6 +45,12 @@ export class ChatHomeComponent implements AfterViewInit {
 
   chatTitle = 'Nuova chat';
 
+  isProjectsOpen = true;
+  isPastChatsOpen = true;
+
+  projectsShowAll = false;
+  readonly projectsPreviewLimit = 5;
+
   models = [
     { label: 'GPT-4.1', value: 'gpt-4.1' },
     { label: 'GPT-4o', value: 'gpt-4o' },
@@ -48,6 +58,19 @@ export class ChatHomeComponent implements AfterViewInit {
   ];
 
   pastChats = [
+    'Roadmap MVP Lyda',
+    'Architettura chat AI',
+    'Idee widget task manager',
+    'Flusso progetti condivisi',
+    'Prompt engineering interno',
+    'Roadmap MVP Lyda',
+    'Architettura chat AI',
+    'Idee widget task manager',
+    'Flusso progetti condivisi',
+    'Prompt engineering interno',
+  ];
+
+  projects = [
     'Roadmap MVP Lyda',
     'Architettura chat AI',
     'Idee widget task manager',
@@ -78,6 +101,26 @@ export class ChatHomeComponent implements AfterViewInit {
 
   toggleChatSidebar(): void {
     this.isChatSidebarCollapsed = !this.isChatSidebarCollapsed;
+  }
+
+  toggleProjects(): void {
+    this.isProjectsOpen = !this.isProjectsOpen;
+  }
+
+  togglePastChats(): void {
+    this.isPastChatsOpen = !this.isPastChatsOpen;
+  }
+
+  get visibleProjects(): string[] {
+    return this.projectsShowAll ? this.projects : this.projects.slice(0, this.projectsPreviewLimit);
+  }
+
+  get shouldShowProjectsToggle(): boolean {
+    return this.projects.length > this.projectsPreviewLimit;
+  }
+
+  toggleProjectsList(): void {
+    this.projectsShowAll = !this.projectsShowAll;
   }
 
   sendMessage(): void {
