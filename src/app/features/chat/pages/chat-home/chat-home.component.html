@@ -22,7 +22,24 @@
     </div>
 
     <div class="chat-composer-wrap">
-      <div class="chat-composer">
+      <div
+        class="chat-composer"
+        (dragenter)="onDragEnter($event)"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+        [class.chat-composer--dragover]="isDragOver"
+      >
+        <!-- overlay -->
+        @if (isDragOver) {
+          <div class="drop-overlay">
+            <div class="drop-overlay__card">
+              <svg lucideUpload class="drop-overlay__icon"></svg>
+              <div class="drop-overlay__title">Rilascia per allegare</div>
+              <div class="drop-overlay__subtitle">I file verranno aggiunti ai tuoi allegati</div>
+            </div>
+          </div>
+        }
         <div class="chat-composer__topbar">
           <div class="attach-wrap">
             <button

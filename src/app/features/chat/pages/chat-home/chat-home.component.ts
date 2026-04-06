@@ -26,6 +26,7 @@ import {
   LucideFolderInput,
   LucideChevronRight,
   LucideMic,
+  LucideUpload,
 } from '@lucide/angular';
 import { TooltipDirective } from '../../../../shared/directives/tooltip/tooltip.directive';
 import { RouterLink } from '@angular/router';
@@ -58,6 +59,7 @@ import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
     LucideChevronRight,
     OverlayModule,
     LucideMic,
+    LucideUpload,
   ],
   templateUrl: './chat-home.component.html',
   styleUrl: './chat-home.component.scss',
@@ -123,6 +125,9 @@ export class ChatHomeComponent implements AfterViewInit {
     // fallback: a destra
     { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top', offsetX: 8, offsetY: 0 },
   ];
+
+  isDragOver = false;
+  private dragDepth = 0;
 
   models = [
     { label: 'GPT-4.1', value: 'gpt-4.1' },
@@ -462,8 +467,50 @@ export class ChatHomeComponent implements AfterViewInit {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
-    const newFiles = Array.from(input.files);
+    this.addFiles(Array.from(input.files));
+    input.value = '';
+  }
 
+  removeFile(file: File): void {
+    this.attachedFiles = this.attachedFiles.filter(
+      (f) => !(f.name === file.name && f.size === file.size && f.lastModified === file.lastModified)
+    );
+  }
+
+  // drag & drop allegati
+  onDragEnter(event: DragEvent): void {
+    event.preventDefault();
+    this.dragDepth++;
+    this.isDragOver = true;
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.dragDepth--;
+    if (this.dragDepth <= 0) {
+      this.dragDepth = 0;
+      this.isDragOver = false;
+    }
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.dragDepth = 0;
+    this.isDragOver = false;
+
+    const files = event.dataTransfer?.files;
+    if (!files || files.length === 0) return;
+
+    this.addFiles(Array.from(files));
+  }
+
+  /** Riusa la logica di deduplica anche per input file */
+  private addFiles(newFiles: File[]): void {
     const existingKeys = new Set(
       this.attachedFiles.map((f) => `${f.name}_${f.size}_${f.lastModified}`)
     );
@@ -475,14 +522,5 @@ export class ChatHomeComponent implements AfterViewInit {
         existingKeys.add(key);
       }
     }
-
-    // reset per poter riselezionare lo stesso file
-    input.value = '';
-  }
-
-  removeFile(file: File): void {
-    this.attachedFiles = this.attachedFiles.filter(
-      (f) => !(f.name === file.name && f.size === file.size && f.lastModified === file.lastModified)
-    );
   }
 }
