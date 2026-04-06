@@ -20,6 +20,7 @@ import {
 } from '@lucide/angular';
 import { TooltipDirective } from '../../../../shared/directives/tooltip/tooltip.directive';
 import { RouterLink } from '@angular/router';
+import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-chat-home',
@@ -46,13 +47,14 @@ import { RouterLink } from '@angular/router';
     LucideShare,
     LucideFolderInput,
     LucideChevronRight,
+    OverlayModule,
   ],
   templateUrl: './chat-home.component.html',
   styleUrl: './chat-home.component.scss',
 })
 export class ChatHomeComponent implements AfterViewInit {
   @ViewChild('promptTextarea') promptTextarea?: ElementRef<HTMLTextAreaElement>;
-
+  @ViewChild('messagesContainer') messagesContainer?: ElementRef<HTMLDivElement>;
   prompt = '';
   selectedModel = 'gpt-4.1';
   isChatSidebarCollapsed = false;
@@ -67,6 +69,43 @@ export class ChatHomeComponent implements AfterViewInit {
 
   openChatMenuId: string | null = null;
   openMoveToProjectForChatId: string | null = null;
+  isMoveHover = false;
+
+  menuPositions: ConnectedPosition[] = [
+    // preferito: menu a SINISTRA del trigger, allineato in alto
+    { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top', offsetX: -8, offsetY: 0 },
+
+    // fallback: a SINISTRA ma più in basso
+    {
+      originX: 'start',
+      originY: 'bottom',
+      overlayX: 'end',
+      overlayY: 'bottom',
+      offsetX: -8,
+      offsetY: 0,
+    },
+
+    // fallback estremo: a DESTRA (se per qualche motivo non c’è spazio a sinistra)
+    { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top', offsetX: 8, offsetY: 0 },
+  ];
+
+  submenuPositions: ConnectedPosition[] = [
+    // preferito: submenu a SINISTRA del “Move to project”
+    { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top', offsetX: -8, offsetY: 0 },
+
+    // fallback: sopra
+    {
+      originX: 'start',
+      originY: 'bottom',
+      overlayX: 'end',
+      overlayY: 'bottom',
+      offsetX: -8,
+      offsetY: 0,
+    },
+
+    // fallback: a destra
+    { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top', offsetX: 8, offsetY: 0 },
+  ];
 
   models = [
     { label: 'GPT-4.1', value: 'gpt-4.1' },
@@ -152,6 +191,10 @@ export class ChatHomeComponent implements AfterViewInit {
 
   toggleChatSidebar(): void {
     this.isChatSidebarCollapsed = !this.isChatSidebarCollapsed;
+
+    // Chiudi sempre menu/overlay quando cambi stato sidebar
+    this.closeChatItemMenu();
+    this.closeMoveToProjectSubmenu();
   }
 
   toggleProjects(): void {
@@ -189,6 +232,11 @@ export class ChatHomeComponent implements AfterViewInit {
     console.log('Create new project');
   }
 
+  onCreateChat(): void {
+    // TODO: creare nuova chat (backend + UI)
+    console.log('Create new chat');
+  }
+
   onMoveChatToProject(chatId: string, projectName: string): void {
     // TODO: spostare chat in progetto (backend + UI)
     this.closeChatItemMenu();
@@ -208,7 +256,10 @@ export class ChatHomeComponent implements AfterViewInit {
     this.prompt = '';
 
     // Dopo che Angular ha aggiornato il DOM, resetta altezza
-    queueMicrotask(() => this.autosize(true));
+    queueMicrotask(() => {
+      this.autosize(true);
+      this.scrollToBottom(true);
+    });
   }
 
   onPromptKeydown(event: KeyboardEvent): void {
@@ -316,5 +367,51 @@ export class ChatHomeComponent implements AfterViewInit {
   openChat(chat: any): void {
     // TODO: implementare apertura chat (backend + UI)
     console.log('Open chat', chat);
+  }
+
+  get submenuProjects(): string[] {
+    return this.projects.slice(0, 8);
+  }
+
+  onMoveEnter(chatId: string): void {
+    this.isMoveHover = true;
+    this.openMoveToProjectForChatId = chatId;
+  }
+
+  onMoveLeave(): void {
+    this.isMoveHover = false;
+
+    // Piccolo delay per permettere il passaggio trigger -> submenu senza flicker
+    setTimeout(() => {
+      if (!this.isMoveHover) {
+        this.openMoveToProjectForChatId = null;
+      }
+    }, 80);
+  }
+
+  onSubmenuEnter(): void {
+    this.isMoveHover = true;
+  }
+
+  onSubmenuLeave(): void {
+    this.onMoveLeave();
+  }
+
+  private scrollToBottom(smooth = true): void {
+    const el = this.messagesContainer?.nativeElement;
+    if (!el) return;
+
+    // doppio RAF per essere sicuri che il nuovo messaggio sia già nel DOM e misurato
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const top = el.scrollHeight;
+
+        if (smooth) {
+          el.scrollTo({ top, behavior: 'smooth' });
+        } else {
+          el.scrollTop = top;
+        }
+      });
+    });
   }
 }

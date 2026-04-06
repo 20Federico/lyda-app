@@ -7,7 +7,7 @@
       </div>
     </header>
 
-    <div class="chat-messages">
+    <div class="chat-messages" #messagesContainer>
       @for (message of messages; track $index) {
         <div
           class="message"
@@ -59,7 +59,7 @@
     </div>
   </section>
 
-  <aside class="chat-sidebar" [class.chat-page--collapsed]="isChatSidebarCollapsed">
+  <aside class="chat-sidebar">
     <div class="chat-sidebar__top">
       <div class="chat-sidebar__header">
         <button
@@ -95,6 +95,7 @@
         type="button"
         [lydaTooltip]="isChatSidebarCollapsed ? 'Nuova chat' : null"
         lydaTooltipPosition="left"
+        (click)="onCreateChat()"
       >
         <svg lucideSquarePen class="sidebar-btn__icon"></svg>
         @if (!isChatSidebarCollapsed) {
@@ -174,6 +175,8 @@
 
                     <span
                       class="chat-item__kebab"
+                      cdkOverlayOrigin
+                      #chatMenuOrigin="cdkOverlayOrigin"
                       role="button"
                       tabindex="0"
                       (click)="toggleChatItemMenu(chat.id, $event)"
@@ -184,8 +187,19 @@
                     </span>
                   </button>
 
-                  @if (openChatMenuId === chat.id) {
+                  <ng-template
+                    cdkConnectedOverlay
+                    [cdkConnectedOverlayOrigin]="chatMenuOrigin"
+                    [cdkConnectedOverlayOpen]="openChatMenuId === chat.id"
+                    [cdkConnectedOverlayPositions]="menuPositions"
+                    [cdkConnectedOverlayPush]="true"
+                    [cdkConnectedOverlayViewportMargin]="8"
+                    [cdkConnectedOverlayHasBackdrop]="true"
+                    [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
+                    (backdropClick)="closeChatItemMenu()"
+                  >
                     <div class="chat-item-menu" (click)="$event.stopPropagation()">
+                      <!-- Share disabled -->
                       <button
                         class="chat-item-menu__item chat-item-menu__item--disabled"
                         type="button"
@@ -204,10 +218,13 @@
                         <span>Rinomina</span>
                       </button>
 
+                      <!-- Move to project row becomes submenu origin -->
                       <div
                         class="chat-item-menu__submenu-wrap"
-                        (mouseenter)="openMoveToProjectSubmenu(chat.id)"
-                        (mouseleave)="closeMoveToProjectSubmenu()"
+                        cdkOverlayOrigin
+                        #moveOrigin="cdkOverlayOrigin"
+                        (mouseenter)="onMoveEnter(chat.id)"
+                        (mouseleave)="onMoveLeave()"
                       >
                         <button class="chat-item-menu__item" type="button">
                           <svg lucideFolderInput class="chat-item-menu__icon"></svg>
@@ -215,8 +232,21 @@
                           <svg lucideChevronRight class="chat-item-menu__icon"></svg>
                         </button>
 
-                        @if (openMoveToProjectForChatId === chat.id) {
-                          <div class="chat-item-submenu" (click)="$event.stopPropagation()">
+                        <ng-template
+                          cdkConnectedOverlay
+                          [cdkConnectedOverlayOrigin]="moveOrigin"
+                          [cdkConnectedOverlayOpen]="openMoveToProjectForChatId === chat.id"
+                          [cdkConnectedOverlayPositions]="submenuPositions"
+                          [cdkConnectedOverlayPush]="true"
+                          [cdkConnectedOverlayViewportMargin]="8"
+                          [cdkConnectedOverlayHasBackdrop]="false"
+                        >
+                          <div
+                            class="chat-item-submenu"
+                            (click)="$event.stopPropagation()"
+                            (mouseenter)="onSubmenuEnter()"
+                            (mouseleave)="onSubmenuLeave()"
+                          >
                             <button
                               class="chat-item-menu__item"
                               type="button"
@@ -226,18 +256,22 @@
                               <span>Nuovo progetto</span>
                             </button>
 
-                            @for (p of projects; track p) {
-                              <button
-                                class="chat-item-menu__item"
-                                type="button"
-                                (click)="onMoveChatToProject(chat.id, p)"
-                              >
-                                <svg lucideFolderClosed class="chat-item-submenu__icon"></svg>
-                                <span>{{ p }}</span>
-                              </button>
-                            }
+                            <div class="chat-item-menu__divider"></div>
+
+                            <div class="chat-item-submenu__list">
+                              @for (p of submenuProjects; track p) {
+                                <button
+                                  class="chat-item-menu__item"
+                                  type="button"
+                                  (click)="onMoveChatToProject(chat.id, p)"
+                                >
+                                  <svg lucideFolderClosed class="chat-item-submenu__icon"></svg>
+                                  <span>{{ p }}</span>
+                                </button>
+                              }
+                            </div>
                           </div>
-                        }
+                        </ng-template>
                       </div>
 
                       <div class="chat-item-menu__divider"></div>
@@ -260,7 +294,7 @@
                         <span>Elimina</span>
                       </button>
                     </div>
-                  }
+                  </ng-template>
                 </div>
               }
             </div>
