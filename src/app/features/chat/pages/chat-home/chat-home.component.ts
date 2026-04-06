@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -33,6 +35,9 @@ import { TooltipDirective } from '../../../../shared/directives/tooltip/tooltip.
 import { RouterLink } from '@angular/router';
 import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { HttpClient } from '@angular/common/http';
+import { ChatService } from '../../chat.service';
+import { AiModelDto } from '../../interfaces/aiModels';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-chat-home',
@@ -131,11 +136,7 @@ export class ChatHomeComponent implements OnInit, AfterViewInit {
   isDragOver = false;
   private dragDepth = 0;
 
-  models = [
-    { label: 'GPT-4.1', value: 'gpt-4.1' },
-    { label: 'GPT-4o', value: 'gpt-4o' },
-    { label: 'Claude Sonnet', value: 'claude-sonnet' },
-  ];
+  models: AiModelDto[] = [];
 
   pastChats = [
     {
@@ -204,17 +205,47 @@ export class ChatHomeComponent implements OnInit, AfterViewInit {
     },
   ];
 
-  constructor(private http: HttpClient) {}
+  isInitLoading = false;
+  initError: string | null = null;
+
+  constructor(
+    private http: HttpClient,
+    private chatService: ChatService
+  ) {}
 
   ngOnInit(): void {
-    this.http.get('/chats').subscribe((res) => {
-      console.log('MOCK RESPONSE /chats:', res);
-    });
+    this.loadInitialData();
   }
 
   ngAfterViewInit(): void {
     // Imposta l’altezza iniziale corretta (1 riga)
     queueMicrotask(() => this.autosize(true));
+  }
+
+  private loadInitialData(): void {
+    this.isInitLoading = true;
+    this.initError = null;
+
+    forkJoin({
+      models: this.chatService.getAiModels(),
+      chats: this.chatService.getChatList(),
+      projects: this.chatService.getProjectList(),
+    }).subscribe({
+      next: ({ models, chats, projects }) => {
+        this.models = models ?? [];
+        if (this.models.length > 0 && !this.models.some((m) => m.value === this.selectedModel)) {
+          this.selectedModel = this.models[0].value;
+        }
+        this.pastChats = chats ?? [];
+        this.projects = (projects ?? []).map((p) => p.name);
+        this.isInitLoading = false;
+      },
+      error: (err) => {
+        console.error('Init load error', err);
+        this.isInitLoading = false;
+        this.initError = 'Errore nel caricamento iniziale dei dati';
+      },
+    });
   }
 
   get isSendDisabled(): boolean {
@@ -238,11 +269,13 @@ export class ChatHomeComponent implements OnInit, AfterViewInit {
   }
 
   get visibleProjects(): string[] {
-    return this.projectsShowAll ? this.projects : this.projects.slice(0, this.projectsPreviewLimit);
+    return this.projectsShowAll
+      ? this.projects
+      : this.projects?.slice(0, this.projectsPreviewLimit);
   }
 
   get shouldShowProjectsToggle(): boolean {
-    return this.projects.length > this.projectsPreviewLimit;
+    return this.projects?.length > this.projectsPreviewLimit;
   }
 
   toggleProjectsList(): void {
@@ -404,7 +437,7 @@ export class ChatHomeComponent implements OnInit, AfterViewInit {
   }
 
   get submenuProjects(): string[] {
-    return this.projects.slice(0, 8);
+    return this.projects?.slice(0, 8) ?? [];
   }
 
   private scrollToBottom(smooth = true): void {

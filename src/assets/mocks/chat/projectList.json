@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "body": [
+    { "id": "proj-1", "name": "Lyda MVP" },
+    { "id": "proj-2", "name": "Banca – Perizie" },
+    { "id": "proj-3", "name": "Test suite Angular" },
+    { "id": "proj-4", "name": "Design System" },
+    { "id": "proj-5", "name": "Roadmap 2026" },
+    { "id": "proj-6", "name": "Widget Reminders" }
+  ]
+}

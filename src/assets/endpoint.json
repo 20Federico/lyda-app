@@ -19,7 +19,16 @@
       "path": "/projects",
       "mock": {
         "enabled": true,
-        "file": "mocks/projects/projectList.json"
+        "file": "mocks/chat/projectList.json"
+      }
+    },
+    {
+      "key": "ai.models",
+      "method": "GET",
+      "path": "/ai-models",
+      "mock": {
+        "enabled": true,
+        "file": "mocks/chat/ai-models.json"
       }
     }
   ]

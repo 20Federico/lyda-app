@@ -1,0 +1,7 @@
+{
+  "status": 200,
+  "body": [
+    { "label": "GPT-4.1", "value": "gpt-4.1", "selected": true },
+    { "label": "GPT-4o", "value": "gpt-4o", "selected": false }
+  ]
+}
