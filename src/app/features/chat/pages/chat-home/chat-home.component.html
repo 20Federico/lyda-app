@@ -168,9 +168,100 @@
           @if (isPastChatsOpen) {
             <div class="chat-group__list">
               @for (chat of pastChats; track chat) {
-                <button class="group-item" type="button">
-                  {{ chat }}
-                </button>
+                <div class="chat-item">
+                  <button class="chat-item__main" type="button" (click)="openChat(chat)">
+                    <span class="chat-item__title">{{ chat.title }}</span>
+
+                    <span
+                      class="chat-item__kebab"
+                      role="button"
+                      tabindex="0"
+                      (click)="toggleChatItemMenu(chat.id, $event)"
+                      (keydown.enter)="toggleChatItemMenu(chat.id, $event)"
+                      aria-label="Azioni chat"
+                    >
+                      <svg lucideEllipsis class="chat-item__kebab-icon"></svg>
+                    </span>
+                  </button>
+
+                  @if (openChatMenuId === chat.id) {
+                    <div class="chat-item-menu" (click)="$event.stopPropagation()">
+                      <button
+                        class="chat-item-menu__item chat-item-menu__item--disabled"
+                        type="button"
+                        disabled
+                      >
+                        <svg lucideShare class="chat-item-menu__icon"></svg>
+                        <span>Condividi</span>
+                      </button>
+
+                      <button
+                        class="chat-item-menu__item"
+                        type="button"
+                        (click)="onChatRename(chat.id)"
+                      >
+                        <svg lucidePencil class="chat-item-menu__icon"></svg>
+                        <span>Rinomina</span>
+                      </button>
+
+                      <div
+                        class="chat-item-menu__submenu-wrap"
+                        (mouseenter)="openMoveToProjectSubmenu(chat.id)"
+                        (mouseleave)="closeMoveToProjectSubmenu()"
+                      >
+                        <button class="chat-item-menu__item" type="button">
+                          <svg lucideFolderInput class="chat-item-menu__icon"></svg>
+                          <span>Sposta su progetto</span>
+                          <svg lucideChevronRight class="chat-item-menu__icon"></svg>
+                        </button>
+
+                        @if (openMoveToProjectForChatId === chat.id) {
+                          <div class="chat-item-submenu" (click)="$event.stopPropagation()">
+                            <button
+                              class="chat-item-menu__item"
+                              type="button"
+                              (click)="onCreateProject()"
+                            >
+                              <svg lucideFolderPlus class="chat-item-submenu__icon"></svg>
+                              <span>Nuovo progetto</span>
+                            </button>
+
+                            @for (p of projects; track p) {
+                              <button
+                                class="chat-item-menu__item"
+                                type="button"
+                                (click)="onMoveChatToProject(chat.id, p)"
+                              >
+                                <svg lucideFolderClosed class="chat-item-submenu__icon"></svg>
+                                <span>{{ p }}</span>
+                              </button>
+                            }
+                          </div>
+                        }
+                      </div>
+
+                      <div class="chat-item-menu__divider"></div>
+
+                      <button
+                        class="chat-item-menu__item"
+                        type="button"
+                        (click)="onChatPin(chat.id)"
+                      >
+                        <svg lucidePin class="chat-item-menu__icon"></svg>
+                        <span>Pin chat</span>
+                      </button>
+
+                      <button
+                        class="chat-item-menu__item chat-item-menu__item--danger"
+                        type="button"
+                        (click)="onChatDelete(chat.id)"
+                      >
+                        <svg lucideTrash2 class="chat-item-menu__icon"></svg>
+                        <span>Elimina</span>
+                      </button>
+                    </div>
+                  }
+                </div>
               }
             </div>
           }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   LucideFolderClosed,
@@ -11,6 +11,12 @@ import {
   LucideEllipsis,
   LucideChevronDown,
   LucideChevronUp,
+  LucidePin,
+  LucideTrash2,
+  LucidePencil,
+  LucideShare,
+  LucideFolderInput,
+  LucideChevronRight,
 } from '@lucide/angular';
 import { TooltipDirective } from '../../../../shared/directives/tooltip/tooltip.directive';
 import { RouterLink } from '@angular/router';
@@ -32,6 +38,14 @@ import { RouterLink } from '@angular/router';
     LucideEllipsis,
     LucideChevronDown,
     LucideChevronUp,
+    LucideFolderPlus,
+    LucideFolderClosed,
+    LucidePin,
+    LucideTrash2,
+    LucidePencil,
+    LucideShare,
+    LucideFolderInput,
+    LucideChevronRight,
   ],
   templateUrl: './chat-home.component.html',
   styleUrl: './chat-home.component.scss',
@@ -51,6 +65,9 @@ export class ChatHomeComponent implements AfterViewInit {
   projectsShowAll = false;
   readonly projectsPreviewLimit = 5;
 
+  openChatMenuId: string | null = null;
+  openMoveToProjectForChatId: string | null = null;
+
   models = [
     { label: 'GPT-4.1', value: 'gpt-4.1' },
     { label: 'GPT-4o', value: 'gpt-4o' },
@@ -58,16 +75,50 @@ export class ChatHomeComponent implements AfterViewInit {
   ];
 
   pastChats = [
-    'Roadmap MVP Lyda',
-    'Architettura chat AI',
-    'Idee widget task manager',
-    'Flusso progetti condivisi',
-    'Prompt engineering interno',
-    'Roadmap MVP Lyda',
-    'Architettura chat AI',
-    'Idee widget task manager',
-    'Flusso progetti condivisi',
-    'Prompt engineering interno',
+    {
+      title: 'Chat del 12/09/2024',
+      id: 'chat-1',
+    },
+    {
+      title: 'Roadmap MVP Lyda',
+      id: 'chat-2',
+    },
+    {
+      title: 'Architettura chat AI',
+      id: 'chat-3',
+    },
+    {
+      title: 'Idee widget task manager',
+      id: 'chat-4',
+    },
+    {
+      title: 'Flusso progetti condivisi',
+      id: 'chat-5',
+    },
+    {
+      title: 'Prompt engineering interno',
+      id: 'chat-6',
+    },
+    {
+      title: 'Roadmap MVP Lyda',
+      id: 'chat-7',
+    },
+    {
+      title: 'Architettura chat AI',
+      id: 'chat-8',
+    },
+    {
+      title: 'Idee widget task manager',
+      id: 'chat-9',
+    },
+    {
+      title: 'Flusso progetti condivisi',
+      id: 'chat-10',
+    },
+    {
+      title: 'Prompt engineering interno',
+      id: 'chat-11',
+    },
   ];
 
   projects = [
@@ -121,6 +172,28 @@ export class ChatHomeComponent implements AfterViewInit {
 
   toggleProjectsList(): void {
     this.projectsShowAll = !this.projectsShowAll;
+  }
+
+  openMoveToProjectSubmenu(chatId: string): void {
+    this.openMoveToProjectForChatId = chatId;
+  }
+
+  closeMoveToProjectSubmenu(): void {
+    this.openMoveToProjectForChatId = null;
+  }
+
+  onCreateProject(): void {
+    // TODO: creare nuovo progetto (backend + UI)
+    this.closeChatItemMenu();
+    this.closeMoveToProjectSubmenu();
+    console.log('Create new project');
+  }
+
+  onMoveChatToProject(chatId: string, projectName: string): void {
+    // TODO: spostare chat in progetto (backend + UI)
+    this.closeChatItemMenu();
+    this.closeMoveToProjectSubmenu();
+    console.log('Move chat', chatId, 'to project', projectName);
   }
 
   sendMessage(): void {
@@ -197,5 +270,51 @@ export class ChatHomeComponent implements AfterViewInit {
 
     textarea.style.height = `${nextHeight}px`;
     textarea.style.overflowY = textarea.scrollHeight > maxHeight ? 'auto' : 'hidden';
+  }
+
+  toggleChatItemMenu(chatId: string, event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.openChatMenuId = this.openChatMenuId === chatId ? null : chatId;
+  }
+
+  closeChatItemMenu(): void {
+    this.openChatMenuId = null;
+    this.openMoveToProjectForChatId = null;
+  }
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.closeChatItemMenu();
+  }
+
+  // Actions (per ora stub)
+  onChatShare(chatId: string): void {
+    // TODO: implementare condivisione chat (backend + UI)
+    this.closeChatItemMenu();
+    console.log('Share', chatId);
+  }
+
+  onChatRename(chatId: string): void {
+    // TODO: implementare ridenominazione chat (backend + UI)
+    this.closeChatItemMenu();
+    console.log('Rename', chatId);
+  }
+
+  onChatPin(chatId: string): void {
+    // TODO: implementare pinning chat (backend + UI)
+    this.closeChatItemMenu();
+    console.log('Pin', chatId);
+  }
+
+  onChatDelete(chatId: string): void {
+    // TODO: implementare eliminazione chat (backend + UI)
+    this.closeChatItemMenu();
+    console.log('Delete', chatId);
+  }
+
+  openChat(chat: any): void {
+    // TODO: implementare apertura chat (backend + UI)
+    console.log('Open chat', chat);
   }
 }
