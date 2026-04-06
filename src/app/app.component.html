@@ -1,0 +1,13 @@
+<router-outlet />
+@if (isLoading$ | async) {
+  <div class="global-loader">
+    <div class="global-loader__card">
+      <div class="global-loader__rings">
+        <div class="global-loader__ring global-loader__ring--outer"></div>
+        <div class="global-loader__ring global-loader__ring--inner"></div>
+      </div>
+
+      <div class="global-loader__text">Lyda sta lavorando…</div>
+    </div>
+  </div>
+}

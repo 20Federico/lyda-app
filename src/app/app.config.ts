@@ -11,6 +11,7 @@ import { routes } from './app.routes';
 import { ApiRegistryService } from './core/api/api-registry.service';
 import { MockInterceptor } from './core/api/mock.interceptor';
 import { ApiBaseUrlInterceptor } from './core/api/api-base-url.interceptor';
+import { LoadingInterceptor } from './core/api/ui/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,7 +24,11 @@ export const appConfig: ApplicationConfig = {
     // Load api.json before app bootstraps (replacement for APP_INITIALIZER)
     provideAppInitializer(() => inject(ApiRegistryService).load()),
 
-    // Mock interceptor
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingInterceptor,
+      multi: true,
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: MockInterceptor,
