@@ -1,0 +1,222 @@
+<div class="settings-page">
+  <section class="settings-content">
+    @if (active === 'account') {
+      <div class="panel">
+        <div class="panel__header">
+          <div>
+            <h1>Account</h1>
+            <p>Gestisci i dati del profilo e la sessione.</p>
+          </div>
+          <button class="primary" type="button" (click)="saveSection('account')">Salva</button>
+        </div>
+
+        <div class="form">
+          <label class="field">
+            <span>Nome</span>
+            <input [(ngModel)]="account.name" type="text" />
+          </label>
+
+          <label class="field">
+            <span>Email</span>
+            <input [(ngModel)]="account.email" type="email" />
+          </label>
+
+          <div class="row">
+            <button class="ghost" type="button">Cambia password</button>
+            <button class="danger" type="button">Logout</button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (active === 'reminders') {
+      <div class="panel">
+        <div class="panel__header">
+          <div>
+            <h1>Reminders</h1>
+            <p>Notifiche, orari di default e comportamento.</p>
+          </div>
+          <button class="primary" type="button" (click)="saveSection('reminders')">Salva</button>
+        </div>
+
+        <div class="form">
+          <label class="toggle">
+            <input [(ngModel)]="reminders.enabled" type="checkbox" />
+            <span>Abilita reminders</span>
+          </label>
+
+          <label class="field">
+            <span>Orario di default</span>
+            <input [(ngModel)]="reminders.defaultTime" type="time" />
+          </label>
+
+          <label class="toggle">
+            <input [(ngModel)]="reminders.desktopNotifications" type="checkbox" />
+            <span>Notifiche desktop</span>
+          </label>
+
+          <label class="toggle">
+            <input [(ngModel)]="reminders.sound" type="checkbox" />
+            <span>Suono notifiche</span>
+          </label>
+        </div>
+      </div>
+    }
+
+    @if (active === 'models') {
+      <div class="panel">
+        <div class="panel__header">
+          <div>
+            <h1>Modelli & API Key</h1>
+            <p>Scegli provider, modello di default e chiave API.</p>
+          </div>
+          <button class="primary" type="button" (click)="saveSection('models')">Salva</button>
+        </div>
+
+        <div class="form">
+          <label class="field">
+            <span>Provider</span>
+            <select [(ngModel)]="models.provider">
+              <option value="openai">OpenAI</option>
+              <option value="anthropic">Anthropic</option>
+              <option value="mistral">Mistral</option>
+              <option value="custom">Custom</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Modello di default</span>
+            <input [(ngModel)]="models.defaultModel" type="text" placeholder="es. gpt-4.1" />
+          </label>
+
+          <label class="field">
+            <span>API Key</span>
+            <input [(ngModel)]="models.apiKey" type="password" placeholder="••••••••" />
+            @if (models.apiKey) {
+              <div class="hint">Salvata: {{ maskKey(models.apiKey) }}</div>
+            }
+          </label>
+
+          <label class="field">
+            <span>Temperature</span>
+            <input [(ngModel)]="models.temperature" type="number" step="0.1" min="0" max="2" />
+            <div class="hint">0 = più deterministico, 1+ = più creativo.</div>
+          </label>
+
+          <div class="row">
+            <button class="ghost" type="button">Test connessione</button>
+            <button class="danger" type="button">Rimuovi key</button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (active === 'system') {
+      <div class="panel">
+        <div class="panel__header">
+          <div>
+            <h1>Sistema & App</h1>
+            <p>Preferenze di sistema e comportamento dell’app.</p>
+          </div>
+          <button class="primary" type="button" (click)="saveSection('system')">Salva</button>
+        </div>
+
+        <div class="form">
+          <h2 class="sub">Preferenze di sistema</h2>
+
+          <label class="toggle">
+            <input [(ngModel)]="system.launchAtStartup" type="checkbox" />
+            <span>Avvia all’accensione</span>
+          </label>
+
+          <label class="toggle">
+            <input [(ngModel)]="system.minimizeToTray" type="checkbox" />
+            <span>Minimizza nella tray</span>
+          </label>
+
+          <label class="toggle">
+            <input [(ngModel)]="system.closeToTray" type="checkbox" />
+            <span>Chiudi nella tray</span>
+          </label>
+
+          <label class="field">
+            <span>Tema</span>
+            <select [(ngModel)]="system.theme">
+              <option value="system">Sistema</option>
+              <option value="dark">Scuro</option>
+              <option value="light">Chiaro</option>
+            </select>
+          </label>
+
+          <h2 class="sub">App</h2>
+
+          <label class="field">
+            <span>Lingua</span>
+            <select [(ngModel)]="app.language">
+              <option value="it">Italiano</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+
+          <label class="toggle">
+            <input [(ngModel)]="app.compactMode" type="checkbox" />
+            <span>Modalità compatta</span>
+          </label>
+        </div>
+      </div>
+    }
+
+    @if (active === 'about') {
+      <div class="panel">
+        <div class="panel__header">
+          <div>
+            <h1>About</h1>
+            <p>Info app, versione e link utili.</p>
+          </div>
+        </div>
+
+        <div class="about">
+          <div class="about__card">
+            <div class="about__name">Lyda</div>
+            <div class="about__meta">Versione: 0.1.0 (MVP)</div>
+            <div class="about__meta">Desktop app • Angular + Electron</div>
+          </div>
+
+          <div class="row">
+            <button class="ghost" type="button">Changelog</button>
+            <button class="ghost" type="button">Licenze</button>
+            <button class="ghost" type="button">Supporto</button>
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+
+  <aside class="settings-nav">
+    <div class="settings-nav__title">Impostazioni</div>
+
+    <button class="nav-item" [class.active]="active === 'account'" (click)="setActive('account')">
+      Account
+    </button>
+
+    <button
+      class="nav-item"
+      [class.active]="active === 'reminders'"
+      (click)="setActive('reminders')"
+    >
+      Reminders
+    </button>
+
+    <button class="nav-item" [class.active]="active === 'models'" (click)="setActive('models')">
+      Modelli & API Key
+    </button>
+
+    <button class="nav-item" [class.active]="active === 'system'" (click)="setActive('system')">
+      Sistema & App
+    </button>
+
+    <button class="nav-item" [class.active]="active === 'about'" (click)="setActive('about')">
+      About
+    </button>
+  </aside>
+</div>
