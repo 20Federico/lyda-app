@@ -10,9 +10,11 @@ import { LoginComponent } from './pages/login/login.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { loginGuard } from './core/auth/login.guard';
 import { authGuard } from './core/auth/auth.guard';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [loginGuard] },
+  { path: 'reset-password', component: ResetPasswordComponent },
   {
     path: '',
     component: ShellComponent,

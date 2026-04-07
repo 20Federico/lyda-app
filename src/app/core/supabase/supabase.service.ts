@@ -26,4 +26,12 @@ export class SupabaseService {
   async signOut() {
     return this.client.auth.signOut();
   }
+
+  async resetPassword(email: string, redirectTo: string) {
+    return this.client.auth.resetPasswordForEmail(email, { redirectTo });
+  }
+
+  async updatePassword(newPassword: string) {
+    return this.client.auth.updateUser({ password: newPassword });
+  }
 }

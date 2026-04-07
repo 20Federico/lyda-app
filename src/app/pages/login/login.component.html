@@ -1,33 +1,181 @@
 <div class="login-page">
   <div class="login-card">
-    <div class="login-title">Accedi a Lyda</div>
-    <div class="login-subtitle">Usa email e password.</div>
+    <div class="login-title">
+      @if (mode === 'signin') {
+        Accedi a Lyda
+      }
+      @if (mode === 'signup') {
+        Crea il tuo account
+      }
+      @if (mode === 'forgot') {
+        Reimposta password
+      }
+    </div>
+
+    <div class="login-subtitle">
+      @if (mode === 'signin') {
+        Usa email e password.
+      }
+      @if (mode === 'signup') {
+        Inserisci i dati e crea l’account.
+      }
+      @if (mode === 'forgot') {
+        Ti inviamo un link via email.
+      }
+    </div>
+
+    @if (success) {
+      <div class="login-success">{{ success }}</div>
+    }
 
     @if (error) {
       <div class="login-error">{{ error }}</div>
     }
 
-    <label class="field">
-      <span>Email</span>
-      <input [(ngModel)]="email" type="email" placeholder="nome@dominio.com" />
-    </label>
+    <form (ngSubmit)="onFormEnter()">
+      <!-- SIGN IN -->
+      @if (mode === 'signin') {
+        <label class="field">
+          <span>Email</span>
+          <input [(ngModel)]="email" name="email" type="email" placeholder="nome@dominio.com" />
+        </label>
 
-    <label class="field">
-      <span>Password</span>
-      <input [(ngModel)]="password" type="password" placeholder="••••••••" />
-    </label>
+        <label class="field">
+          <span>Password</span>
+          <input
+            [(ngModel)]="password"
+            name="password"
+            type="password"
+            minlength="8"
+            placeholder="Min. 8 caratteri"
+          />
+        </label>
 
-    <div class="actions">
-      <button class="btn btn-ghost" type="button" (click)="signUp()" [disabled]="isLoading">
-        Registrati
-      </button>
-      <button class="btn btn-primary" type="button" (click)="signIn()" [disabled]="isLoading">
-        @if (isLoading) {
-          <span>Carico…</span>
-        } @else {
-          <span>Accedi</span>
-        }
-      </button>
-    </div>
+        <button
+          class="link-btn mt-3"
+          type="button"
+          (click)="setMode('forgot')"
+          [disabled]="isLoading"
+        >
+          Password dimenticata?
+        </button>
+
+        <div class="actions">
+          <button class="btn btn-primary" type="submit" [disabled]="isSignInDisabled">
+            @if (isLoading) {
+              <span>Carico…</span>
+            } @else {
+              <span>Accedi</span>
+            }
+          </button>
+        </div>
+
+        <div class="footer-text">
+          Non hai ancora un account?
+          <button
+            class="inline-link"
+            type="button"
+            (click)="setMode('signup')"
+            [disabled]="isLoading"
+          >
+            Registrati ora
+          </button>
+        </div>
+      }
+
+      <!-- SIGN UP -->
+      @if (mode === 'signup') {
+        <label class="field">
+          <span>Nome *</span>
+          <input
+            [(ngModel)]="fullName"
+            name="fullName"
+            type="text"
+            maxlength="50"
+            placeholder="Il tuo nome"
+          />
+        </label>
+
+        <label class="field">
+          <span>Numero di telefono (opzionale)</span>
+          <input
+            [ngModel]="phone"
+            (ngModelChange)="onPhoneChange($event)"
+            (keydown)="blockNonNumeric($event)"
+            name="phone"
+            type="tel"
+            inputmode="numeric"
+            maxlength="11"
+            placeholder="3xx xxx xxxx"
+          />
+        </label>
+
+        <label class="field">
+          <span>Email *</span>
+          <input [(ngModel)]="email" name="email" type="email" placeholder="nome@dominio.com" />
+        </label>
+
+        <label class="field">
+          <span>Password *</span>
+          <input
+            [(ngModel)]="password"
+            name="password"
+            type="password"
+            minlength="8"
+            placeholder="Min. 8 caratteri"
+          />
+        </label>
+
+        <div class="actions">
+          <button
+            class="btn btn-ghost"
+            type="button"
+            (click)="setMode('signin')"
+            [disabled]="isLoading"
+          >
+            Torna al login
+          </button>
+
+          <button class="btn btn-primary" type="submit" [disabled]="isSignUpDisabled">
+            @if (isLoading) {
+              <span>Carico…</span>
+            } @else {
+              <span>Crea account</span>
+            }
+          </button>
+        </div>
+
+        <div class="hint mt-3">
+          * Dopo la registrazione dovrai verificare l’email prima di poter accedere.
+        </div>
+      }
+
+      <!-- FORGOT PASSWORD -->
+      @if (mode === 'forgot') {
+        <label class="field">
+          <span>Email</span>
+          <input [(ngModel)]="email" name="email" type="email" placeholder="nome@dominio.com" />
+        </label>
+
+        <div class="actions">
+          <button
+            class="btn btn-ghost"
+            type="button"
+            (click)="setMode('signin')"
+            [disabled]="isLoading"
+          >
+            Torna al login
+          </button>
+
+          <button class="btn btn-primary" type="submit" [disabled]="isForgotDisabled">
+            @if (isLoading) {
+              <span>Invio…</span>
+            } @else {
+              <span>Invia link</span>
+            }
+          </button>
+        </div>
+      }
+    </form>
   </div>
 </div>
