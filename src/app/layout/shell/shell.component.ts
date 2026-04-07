@@ -14,6 +14,7 @@ import {
   LucideNotebookPen,
 } from '@lucide/angular';
 import { TooltipDirective } from '../../shared/directives/tooltip/tooltip.directive';
+import { SupabaseService } from '../../core/supabase/supabase.service';
 
 @Component({
   selector: 'app-shell',
@@ -48,7 +49,10 @@ export class ShellComponent {
     title: 'Software Engineer',
   };
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private supabase: SupabaseService
+  ) {}
 
   toggleSidebar(): void {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
@@ -69,9 +73,9 @@ export class ShellComponent {
     this.router.navigate(['/settings']);
   }
 
-  onLogout(): void {
-    this.isProfileMenuOpen = false;
-    console.log('Logout');
+  async logout(): Promise<void> {
+    await this.supabase.signOut();
+    await this.router.navigateByUrl('/login');
   }
 
   @HostListener('document:click')

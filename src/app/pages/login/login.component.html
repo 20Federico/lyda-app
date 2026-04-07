@@ -1,0 +1,33 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-title">Accedi a Lyda</div>
+    <div class="login-subtitle">Usa email e password.</div>
+
+    @if (error) {
+      <div class="login-error">{{ error }}</div>
+    }
+
+    <label class="field">
+      <span>Email</span>
+      <input [(ngModel)]="email" type="email" placeholder="nome@dominio.com" />
+    </label>
+
+    <label class="field">
+      <span>Password</span>
+      <input [(ngModel)]="password" type="password" placeholder="••••••••" />
+    </label>
+
+    <div class="actions">
+      <button class="btn btn-ghost" type="button" (click)="signUp()" [disabled]="isLoading">
+        Registrati
+      </button>
+      <button class="btn btn-primary" type="button" (click)="signIn()" [disabled]="isLoading">
+        @if (isLoading) {
+          <span>Carico…</span>
+        } @else {
+          <span>Accedi</span>
+        }
+      </button>
+    </div>
+  </div>
+</div>

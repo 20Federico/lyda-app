@@ -1,0 +1,101 @@
+.nf-page {
+  height: calc(100vh - 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f7;
+  padding: 20px;
+}
+
+.nf-card {
+  width: min(520px, 92vw);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  box-shadow: 0 34px 80px rgba(17, 24, 39, 0.16);
+  backdrop-filter: blur(12px);
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.nf-card::before {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.55), transparent 55%);
+  transform: rotate(12deg);
+  opacity: 0.9;
+}
+
+.nf-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.08);
+  color: rgba(17, 24, 39, 0.85);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  position: relative;
+  z-index: 1;
+}
+
+.nf-title {
+  margin: 14px 0 0;
+  font-size: 22px;
+  font-weight: 900;
+  color: #111827;
+  position: relative;
+  z-index: 1;
+}
+
+.nf-subtitle {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+
+.nf-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.btn {
+  flex: 1;
+  border-radius: 14px;
+  padding: 12px 12px;
+  font-weight: 900;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: 0.18s ease;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: #111827;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #1f2937;
+}
+
+.btn-ghost {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #111827;
+}
+
+.btn-ghost:hover {
+  background: #f3f4f6;
+}
