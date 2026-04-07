@@ -62,7 +62,7 @@
             />
           </div>
 
-          <select [(ngModel)]="selectedModel" class="model-select">
+          <select [(ngModel)]="selectedModel" class="model-select" [disabled]="models.length === 0">
             @for (model of models; track model.value) {
               <option [value]="model.value">
                 {{ model.label }}
@@ -366,6 +366,22 @@
                 </div>
               }
             </div>
+            @if (hasMoreChats && !isLoadingMoreChats) {
+              <button
+                class="chat-group__load-more-btn"
+                type="button"
+                (click)="loadMoreChats()"
+                [disabled]="isLoadingMoreChats"
+              >
+                Carica altre chat
+              </button>
+            }
+            @if (isLoadingMoreChats) {
+              <div class="chat-list-loading">Carico altre chat…</div>
+            }
+            @if (!hasMoreChats) {
+              <div class="chat-list-end">Non sono presenti altre chat</div>
+            }
           }
         </div>
       }

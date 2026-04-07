@@ -38,6 +38,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChatService } from '../../chat.service';
 import { AiModelDto } from '../../interfaces/aiModels';
 import { forkJoin } from 'rxjs';
+import { ChatSummaryDto } from '../../interfaces/chatItem';
 
 @Component({
   selector: 'app-chat-home',
@@ -78,7 +79,7 @@ export class ChatHomeComponent implements OnInit, AfterViewInit {
   @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
 
   prompt = '';
-  selectedModel = 'gpt-4.1';
+  selectedModel = '';
   isChatSidebarCollapsed = false;
 
   chatTitle = 'Nuova chat';
@@ -138,52 +139,7 @@ export class ChatHomeComponent implements OnInit, AfterViewInit {
 
   models: AiModelDto[] = [];
 
-  pastChats = [
-    {
-      title: 'Chat del 12/09/2024',
-      id: 'chat-1',
-    },
-    {
-      title: 'Roadmap MVP Lyda',
-      id: 'chat-2',
-    },
-    {
-      title: 'Architettura chat AI',
-      id: 'chat-3',
-    },
-    {
-      title: 'Idee widget task manager',
-      id: 'chat-4',
-    },
-    {
-      title: 'Flusso progetti condivisi',
-      id: 'chat-5',
-    },
-    {
-      title: 'Prompt engineering interno',
-      id: 'chat-6',
-    },
-    {
-      title: 'Roadmap MVP Lyda',
-      id: 'chat-7',
-    },
-    {
-      title: 'Architettura chat AI',
-      id: 'chat-8',
-    },
-    {
-      title: 'Idee widget task manager',
-      id: 'chat-9',
-    },
-    {
-      title: 'Flusso progetti condivisi',
-      id: 'chat-10',
-    },
-    {
-      title: 'Prompt engineering interno',
-      id: 'chat-11',
-    },
-  ];
+  pastChats: ChatSummaryDto[] = [];
 
   projects = [
     'Roadmap MVP Lyda',
@@ -204,6 +160,14 @@ export class ChatHomeComponent implements OnInit, AfterViewInit {
       content: 'Ciao. Sono Lyda. Dimmi su cosa vuoi lavorare.',
     },
   ];
+
+  isLoadingMoreChats = false;
+  hasMoreChats = true;
+  chatCursor: string | null = null; // updatedAt dell'ultima chat caricata (la più vecchia tra quelle presenti)
+
+  private readonly CHAT_PAGE_SIZE_INITIAL = 50;
+  private readonly CHAT_PAGE_SIZE_MORE = 15;
+  private readonly SCROLL_THRESHOLD_PX = 120; // quanto prima del fondo triggerare
 
   isInitLoading = false;
   initError: string | null = null;
@@ -228,15 +192,20 @@ export class ChatHomeComponent implements OnInit, AfterViewInit {
 
     forkJoin({
       models: this.chatService.getAiModels(),
-      chats: this.chatService.getChatList(),
+      chats: this.chatService.getChatList(0, 50),
       projects: this.chatService.getProjectList(),
     }).subscribe({
       next: ({ models, chats, projects }) => {
+        // models
         this.models = models ?? [];
         if (this.models.length > 0 && !this.models.some((m) => m.value === this.selectedModel)) {
-          this.selectedModel = this.models[0].value;
+          this.selectedModel =
+            this.models.find((m) => m.selected === true)?.value ?? this.models[0].value;
         }
+        // chats
         this.pastChats = chats ?? [];
+        this.hasMoreChats = this.pastChats.length >= this.CHAT_PAGE_SIZE_INITIAL;
+        // projects
         this.projects = (projects ?? []).map((p) => p.name);
         this.isInitLoading = false;
       },
@@ -565,5 +534,42 @@ export class ChatHomeComponent implements OnInit, AfterViewInit {
         existingKeys.add(key);
       }
     }
+  }
+
+  protected loadMoreChats(): void {
+    if (this.isLoadingMoreChats || !this.hasMoreChats) return;
+
+    this.isLoadingMoreChats = true;
+
+    const start = this.pastChats.length + 1; // offset 0-based
+    const end = start + this.CHAT_PAGE_SIZE_MORE;
+
+    this.chatService.getChatList(start, end).subscribe({
+      next: (more) => {
+        const incoming = more ?? [];
+
+        if (incoming.length === 0) {
+          this.hasMoreChats = false;
+          this.isLoadingMoreChats = false;
+          return;
+        }
+
+        const existingIds = new Set(this.pastChats.map((c: any) => c.id));
+        const deduped = incoming.filter((c: any) => !existingIds.has(c.id));
+
+        // this.pastChats = [...this.pastChats, ...incoming];
+        this.pastChats = [...this.pastChats, ...deduped];
+
+        if (incoming.length < this.CHAT_PAGE_SIZE_MORE) {
+          this.hasMoreChats = false;
+        }
+
+        this.isLoadingMoreChats = false;
+      },
+      error: (err) => {
+        console.error('loadMoreChats error', err);
+        this.isLoadingMoreChats = false;
+      },
+    });
   }
 }

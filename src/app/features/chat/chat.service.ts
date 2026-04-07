@@ -11,14 +11,15 @@ export class ChatService {
   constructor(private http: HttpClient) {}
 
   getAiModels(): Observable<AiModelDto[]> {
-    return this.http.get<ResponseBase<AiModelDto[]>>('/ai-models').pipe(map((r) => r.body));
+    return this.http.get<AiModelDto[]>('/ai-models');
   }
 
-  getChatList(): Observable<ChatSummaryDto[]> {
-    return this.http.get<ResponseBase<ChatSummaryDto[]>>('/chats').pipe(map((r) => r.body));
+  getChatList(chatStart: number, chatEnd: number): Observable<ChatSummaryDto[]> {
+    const params = { chatStart: chatStart, chatEnd: chatEnd };
+    return this.http.get<ChatSummaryDto[]>('/chats', { params });
   }
 
   getProjectList(): Observable<ProjectDto[]> {
-    return this.http.get<ResponseBase<ProjectDto[]>>('/projects').pipe(map((r) => r.body));
+    return this.http.get<ProjectDto[]>('/projects');
   }
 }
