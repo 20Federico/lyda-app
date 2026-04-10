@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import {
   LucideMail,
@@ -13,8 +13,15 @@ import {
   LucidePanelLeftOpen,
   LucideNotebookPen,
 } from '@lucide/angular';
+import { map } from 'rxjs/operators';
 import { TooltipDirective } from '../../shared/directives/tooltip/tooltip.directive';
 import { SupabaseService } from '../../core/supabase/supabase.service';
+import { AuthService } from '../../core/auth/auth.service';
+
+type UiUser = {
+  name: string;
+  email: string;
+};
 
 @Component({
   selector: 'app-shell',
@@ -40,19 +47,28 @@ import { SupabaseService } from '../../core/supabase/supabase.service';
   styleUrl: './shell.component.scss',
 })
 export class ShellComponent {
+  private readonly router = inject(Router);
+  private readonly supabase = inject(SupabaseService);
+  private readonly auth = inject(AuthService);
+
   isProfileMenuOpen = false;
   isSidebarCollapsed = false;
 
-  user = {
-    name: 'Federico',
-    email: 'federico@example.com',
-    title: 'Software Engineer',
-  };
+  readonly user$ = this.auth.session$.pipe(
+    map((session): UiUser => {
+      const user = session?.user;
+      const email = user?.email ?? '';
+      const meta: any = user?.user_metadata ?? {};
 
-  constructor(
-    private router: Router,
-    private supabase: SupabaseService
-  ) {}
+      const nameFromMeta = (meta.full_name ?? meta.name ?? '').trim();
+      const fallbackName = email ? email.split('@')[0] : 'Utente';
+
+      return {
+        name: nameFromMeta || fallbackName,
+        email,
+      };
+    })
+  );
 
   toggleSidebar(): void {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
@@ -74,6 +90,7 @@ export class ShellComponent {
   }
 
   async logout(): Promise<void> {
+    this.isProfileMenuOpen = false;
     await this.supabase.signOut();
     await this.router.navigateByUrl('/login');
   }

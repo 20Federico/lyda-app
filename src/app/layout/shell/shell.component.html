@@ -78,47 +78,51 @@
     </div>
 
     <div class="sidebar__bottom">
-      <div class="profile-wrapper">
-        <button
-          class="profile-trigger"
-          type="button"
-          (click)="toggleProfileMenu($event)"
-          [attr.title]="isSidebarCollapsed ? user.name : null"
-          [lydaTooltip]="isSidebarCollapsed ? 'Account' : null"
-          lydaTooltipPosition="right"
-        >
-          <div class="profile-avatar">F</div>
+      @if (user$ | async; as user) {
+        <div class="profile-wrapper">
+          <button
+            class="profile-trigger"
+            type="button"
+            (click)="toggleProfileMenu($event)"
+            [attr.title]="isSidebarCollapsed ? user.name : null"
+            [lydaTooltip]="isSidebarCollapsed ? 'Account' : null"
+            lydaTooltipPosition="right"
+          >
+            <div class="profile-avatar">
+              {{ user.name.slice(0, 1).toUpperCase() }}
+            </div>
 
-          @if (!isSidebarCollapsed) {
-            <div class="profile-meta">
-              <span class="profile-name">{{ user.name }}</span>
-              <span class="profile-subtitle">Profilo</span>
+            @if (!isSidebarCollapsed) {
+              <div class="profile-meta">
+                <span class="profile-name">{{ user.name }}</span>
+                <span class="profile-subtitle">Profilo</span>
+              </div>
+            }
+          </button>
+
+          @if (isProfileMenuOpen) {
+            <div class="profile-menu" (click)="$event.stopPropagation()">
+              <div class="profile-menu__email">
+                <span>{{ user.email }}</span>
+              </div>
+
+              <button type="button" class="profile-menu__item" (click)="onSettings()">
+                <svg lucideSettings class="profile-menu__icon"></svg>
+                <span>Settings</span>
+              </button>
+
+              <button
+                type="button"
+                class="profile-menu__item profile-menu__item--danger"
+                (click)="logout()"
+              >
+                <svg lucideLogOut class="profile-menu__icon"></svg>
+                <span>Logout</span>
+              </button>
             </div>
           }
-        </button>
-
-        @if (isProfileMenuOpen) {
-          <div class="profile-menu" (click)="$event.stopPropagation()">
-            <div class="profile-menu__email">
-              <span>{{ user.email }}</span>
-            </div>
-
-            <button type="button" class="profile-menu__item" (click)="onSettings()">
-              <svg lucideSettings class="profile-menu__icon"></svg>
-              <span>Settings</span>
-            </button>
-
-            <button
-              type="button"
-              class="profile-menu__item profile-menu__item--danger"
-              (click)="logout()"
-            >
-              <svg lucideLogOut class="profile-menu__icon"></svg>
-              <span>Logout</span>
-            </button>
-          </div>
-        }
-      </div>
+        </div>
+      }
     </div>
   </aside>
 

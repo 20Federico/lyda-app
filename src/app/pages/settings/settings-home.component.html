@@ -7,23 +7,141 @@
             <h1>Account</h1>
             <p>Gestisci i dati del profilo e la sessione.</p>
           </div>
-          <button class="primary" type="button" (click)="saveSection('account')">Salva</button>
+
+          <button
+            class="primary"
+            type="button"
+            (click)="saveAccount()"
+            [disabled]="isAccountSaveDisabled"
+          >
+            @if (isAccountSaving) {
+              Salvo…
+            } @else {
+              Salva
+            }
+          </button>
         </div>
+
+        @if (accountSuccess) {
+          <div class="banner-success">{{ accountSuccess }}</div>
+        }
+        @if (accountError) {
+          <div class="banner-error">{{ accountError }}</div>
+        }
 
         <div class="form">
           <label class="field">
             <span>Nome</span>
-            <input [(ngModel)]="account.name" type="text" />
+            <input
+              [(ngModel)]="account.name"
+              type="text"
+              maxlength="50"
+              placeholder="Il tuo nome"
+            />
+            <div class="hint">Max 50 caratteri.</div>
           </label>
 
           <label class="field">
             <span>Email</span>
-            <input [(ngModel)]="account.email" type="email" />
+            <input [(ngModel)]="account.email" type="email" disabled />
+            <div class="hint">Per ora l’email non è modificabile da qui.</div>
+          </label>
+
+          <label class="field">
+            <span>Telefono (opzionale)</span>
+            <input
+              [ngModel]="account.phone"
+              (ngModelChange)="onAccountPhoneChange($event)"
+              type="tel"
+              inputmode="numeric"
+              maxlength="11"
+              placeholder="Solo numeri, max 11"
+            />
+            <div class="hint">Solo numeri, massimo 11 cifre.</div>
           </label>
 
           <div class="row">
-            <button class="ghost" type="button">Cambia password</button>
-            <button class="danger" type="button">Logout</button>
+            <button class="ghost" type="button" (click)="togglePasswordForm()">
+              @if (isPasswordFormOpen) {
+                Chiudi cambio password
+              } @else {
+                Cambia password
+              }
+            </button>
+
+            <button
+              class="danger"
+              type="button"
+              (click)="logout()"
+              [disabled]="isAccountSaving || isPasswordSaving"
+            >
+              Logout
+            </button>
+          </div>
+
+          @if (isPasswordFormOpen) {
+            <div class="subpanel">
+              <div class="subpanel__title">Cambia password</div>
+
+              @if (passwordSuccess) {
+                <div class="banner-success">{{ passwordSuccess }}</div>
+              }
+              @if (passwordError) {
+                <div class="banner-error">{{ passwordError }}</div>
+              }
+
+              <div class="form">
+                <label class="field">
+                  <span>Nuova password</span>
+                  <input
+                    [(ngModel)]="newPassword"
+                    type="password"
+                    minlength="8"
+                    placeholder="Min. 8 caratteri"
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Conferma password</span>
+                  <input
+                    [(ngModel)]="confirmPassword"
+                    type="password"
+                    minlength="8"
+                    placeholder="Ripeti la password"
+                  />
+                </label>
+
+                <div class="row">
+                  <button
+                    class="primary"
+                    type="button"
+                    (click)="changePassword()"
+                    [disabled]="isPasswordSaveDisabled"
+                  >
+                    @if (isPasswordSaving) {
+                      Salvo…
+                    } @else {
+                      Salva password
+                    }
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+
+          <div class="danger-zone">
+            <div class="danger-zone__title">Zona pericolosa</div>
+            <div class="danger-zone__desc">
+              Eliminare l’account cancella i tuoi dati. Operazione irreversibile.
+            </div>
+
+            <button class="danger danger-zone__btn" type="button" (click)="deleteAccount()">
+              Elimina account
+            </button>
+
+            @if (deleteInfo) {
+              <div class="hint">{{ deleteInfo }}</div>
+            }
           </div>
         </div>
       </div>
